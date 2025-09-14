@@ -90,8 +90,8 @@ class AdaIN(nn.Module):
     def __init__(self, in_channels, style_dim):
         super().__init__()
         self.norm = nn.InstanceNorm2d(in_channels)
-        self.style_scale = EqualizedLinear(style_dim, in_channels, bias_init=1)
-        self.style_bias = EqualizedLinear(style_dim, in_channels, bias_init=0)
+        self.style_scale = EqualizedLinear(style_dim, in_channels)
+        self.style_bias = EqualizedLinear(style_dim, in_channels)
 
     def forward(self, x, style):
         """

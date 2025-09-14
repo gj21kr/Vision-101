@@ -402,8 +402,13 @@ def train_medical_cyclegan(domain_A='chest_xray', domain_B='brain_mri',
             batch_size = real_A.size(0)
 
             # Labels for discriminator
-            valid = torch.ones(batch_size, 1, 30, 30, device=device, requires_grad=False)  # PatchGAN output size
-            fake = torch.zeros(batch_size, 1, 30, 30, device=device, requires_grad=False)
+            # Get discriminator output size dynamically
+            with torch.no_grad():
+                sample_output = netD_A(real_A[:1])  # Use first sample to get output size
+                disc_output_size = sample_output.shape[2:]  # Get spatial dimensions (H, W)
+
+            valid = torch.ones(batch_size, 1, *disc_output_size, device=device, requires_grad=False)
+            fake = torch.zeros(batch_size, 1, *disc_output_size, device=device, requires_grad=False)
 
             # =================
             # Train Generators

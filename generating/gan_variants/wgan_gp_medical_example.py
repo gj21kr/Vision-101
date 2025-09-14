@@ -473,7 +473,7 @@ def train_medical_wgan_gp(dataset_type='chest_xray', data_path=None, num_epochs=
         plt.grid(True)
 
         plt.tight_layout()
-        plt.savefig(os.path.join(logger.plots_dir, 'wgan_gp_metrics.png'), dpi=150, bbox_inches='tight')
+        plt.savefig(os.path.join(logger.results_dir, 'plots', 'wgan_gp_metrics.png'), dpi=150, bbox_inches='tight')
         plt.close()
 
     # Save final models

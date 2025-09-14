@@ -1,9 +1,0 @@
-{
-  "experiment_name": "generating_vae_chest_xray",
-  "timestamp": "20250914_083603",
-  "duration": "2025-09-14T08:37:01.362467",
-  "total_epochs": 30,
-  "final_train_loss": 83052.5009765625,
-  "best_train_loss": 83052.5009765625,
-  "results_directory": "results/generating_vae_chest_xray_20250914_083603"
-}

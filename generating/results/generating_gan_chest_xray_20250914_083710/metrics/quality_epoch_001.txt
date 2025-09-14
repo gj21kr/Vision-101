@@ -1,7 +1,0 @@
-Epoch: 1
-Quality Score: 5.0000
-Pixel Mean: 0.5621
-Pixel Std: 0.3269
-Generator Loss: 0.6289
-Discriminator Loss: 0.6048
-Discriminator Accuracy: 0.5815
