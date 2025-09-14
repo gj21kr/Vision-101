@@ -1,0 +1,54 @@
+[2025-09-14 08:37:10] [INFO] Experiment started: generating_gan_chest_xray
+[2025-09-14 08:37:10] [INFO] Results will be saved to: results/generating_gan_chest_xray_20250914_083710
+[2025-09-14 08:37:10] [INFO] Configuration saved: results/generating_gan_chest_xray_20250914_083710/logs/config.json
+[2025-09-14 08:37:10] [INFO] Using device: cpu
+[2025-09-14 08:37:10] [INFO] Loading chest_xray data...
+[2025-09-14 08:37:11] [INFO] Loaded 2000 chest_xray images
+[2025-09-14 08:37:11] [INFO] Image shape: (64, 64)
+[2025-09-14 08:37:12] [INFO] Image grid saved: results/generating_gan_chest_xray_20250914_083710/images/original_samples.png
+[2025-09-14 08:37:12] [INFO] Generator parameters: 3,532,161
+[2025-09-14 08:37:12] [INFO] Discriminator parameters: 99,649
+[2025-09-14 08:37:12] [INFO] Starting Medical GAN training...
+[2025-09-14 08:37:14] [INFO] Epoch 1/100, Batch 0/32, D_loss: 0.6941, G_loss: 0.6952
+[2025-09-14 08:38:01] [INFO] Epoch 1: Train Loss = 0.628879, Val Loss = 0.604802, D_loss = 0.6048016157001257, G_loss = 0.628879064694047, D_acc_real = 0.96826171875, D_acc_fake = 0.19482421875, D_acc_total = 0.58154296875
+[2025-09-14 08:38:01] [INFO] Saving results at epoch 1...
+[2025-09-14 08:38:02] [INFO] Image grid saved: results/generating_gan_chest_xray_20250914_083710/images/generated_samples_epoch_001.png
+[2025-09-14 08:38:05] [INFO] Epoch 2/100, Batch 0/32, D_loss: 0.5682, G_loss: 0.6017
+[2025-09-14 08:38:52] [INFO] Epoch 2: Train Loss = 0.700845, Val Loss = 0.524592, D_loss = 0.524592200294137, G_loss = 0.7008445505052805, D_acc_real = 0.994140625, D_acc_fake = 0.48291015625, D_acc_total = 0.738525390625
+[2025-09-14 08:38:53] [INFO] Epoch 3/100, Batch 0/32, D_loss: 0.4626, G_loss: 0.8514
+[2025-09-14 08:39:40] [INFO] Epoch 3: Train Loss = 0.944448, Val Loss = 0.442789, D_loss = 0.4427891941741109, G_loss = 0.9444483276456594, D_acc_real = 0.97802734375, D_acc_fake = 0.873046875, D_acc_total = 0.925537109375
+[2025-09-14 08:39:42] [INFO] Epoch 4/100, Batch 0/32, D_loss: 0.4021, G_loss: 1.1269
+[2025-09-14 08:40:29] [INFO] Epoch 4: Train Loss = 1.077123, Val Loss = 0.442901, D_loss = 0.4429007163271308, G_loss = 1.0771229583770037, D_acc_real = 0.9111328125, D_acc_fake = 0.880859375, D_acc_total = 0.89599609375
+[2025-09-14 08:40:31] [INFO] Epoch 5/100, Batch 0/32, D_loss: 0.4190, G_loss: 1.2566
+[2025-09-14 08:41:18] [INFO] Epoch 5: Train Loss = 1.193678, Val Loss = 0.421868, D_loss = 0.4218684174120426, G_loss = 1.1936780605465174, D_acc_real = 0.88720703125, D_acc_fake = 0.9091796875, D_acc_total = 0.898193359375
+[2025-09-14 08:41:20] [INFO] Epoch 6/100, Batch 0/32, D_loss: 0.4751, G_loss: 1.2267
+[2025-09-14 08:42:07] [INFO] Epoch 6: Train Loss = 1.162778, Val Loss = 0.425682, D_loss = 0.42568223271518946, G_loss = 1.1627775356173515, D_acc_real = 0.86962890625, D_acc_fake = 0.88525390625, D_acc_total = 0.87744140625
+[2025-09-14 08:42:08] [INFO] Epoch 7/100, Batch 0/32, D_loss: 0.4497, G_loss: 1.0508
+[2025-09-14 08:42:56] [INFO] Epoch 7: Train Loss = 1.224062, Val Loss = 0.419220, D_loss = 0.4192195041105151, G_loss = 1.224062018096447, D_acc_real = 0.8759765625, D_acc_fake = 0.91259765625, D_acc_total = 0.894287109375
+[2025-09-14 08:42:57] [INFO] Epoch 8/100, Batch 0/32, D_loss: 0.4294, G_loss: 1.0629
+[2025-09-14 08:43:52] [INFO] Epoch 8: Train Loss = 1.327241, Val Loss = 0.400559, D_loss = 0.400559495203197, G_loss = 1.3272409215569496, D_acc_real = 0.8818359375, D_acc_fake = 0.93603515625, D_acc_total = 0.908935546875
+[2025-09-14 08:43:53] [INFO] Epoch 9/100, Batch 0/32, D_loss: 0.3715, G_loss: 1.2132
+[2025-09-14 08:44:40] [INFO] Epoch 9: Train Loss = 1.262962, Val Loss = 0.393029, D_loss = 0.39302851259708405, G_loss = 1.262962106615305, D_acc_real = 0.9072265625, D_acc_fake = 0.89599609375, D_acc_total = 0.901611328125
+[2025-09-14 08:44:42] [INFO] Epoch 10/100, Batch 0/32, D_loss: 0.3953, G_loss: 1.1658
+[2025-09-14 08:45:30] [INFO] Epoch 10: Train Loss = 1.326838, Val Loss = 0.415624, D_loss = 0.41562442388385534, G_loss = 1.3268382176756859, D_acc_real = 0.861328125, D_acc_fake = 0.919921875, D_acc_total = 0.890625
+[2025-09-14 08:45:30] [INFO] Saving results at epoch 10...
+[2025-09-14 08:45:31] [INFO] Image grid saved: results/generating_gan_chest_xray_20250914_083710/images/generated_samples_epoch_010.png
+[2025-09-14 08:45:34] [INFO] Epoch 11/100, Batch 0/32, D_loss: 0.3994, G_loss: 1.3032
+[2025-09-14 08:46:21] [INFO] Epoch 11: Train Loss = 1.292148, Val Loss = 0.418659, D_loss = 0.4186592139303684, G_loss = 1.2921475991606712, D_acc_real = 0.8662109375, D_acc_fake = 0.896484375, D_acc_total = 0.88134765625
+[2025-09-14 08:46:23] [INFO] Epoch 12/100, Batch 0/32, D_loss: 0.3938, G_loss: 1.4058
+[2025-09-14 08:57:59] [INFO] Epoch 12: Train Loss = 1.251112, Val Loss = 0.447429, D_loss = 0.4474285626783967, G_loss = 1.251111764460802, D_acc_real = 0.8212890625, D_acc_fake = 0.84423828125, D_acc_total = 0.832763671875
+[2025-09-14 08:58:00] [INFO] Epoch 13/100, Batch 0/32, D_loss: 0.5223, G_loss: 0.9483
+[2025-09-14 08:58:49] [INFO] Epoch 13: Train Loss = 1.149731, Val Loss = 0.481179, D_loss = 0.4811790129169822, G_loss = 1.149731332436204, D_acc_real = 0.8203125, D_acc_fake = 0.80859375, D_acc_total = 0.814453125
+[2025-09-14 08:58:51] [INFO] Epoch 14/100, Batch 0/32, D_loss: 0.5112, G_loss: 1.0191
+[2025-09-14 08:59:40] [INFO] Epoch 14: Train Loss = 1.092607, Val Loss = 0.510207, D_loss = 0.5102074248716235, G_loss = 1.0926074162125587, D_acc_real = 0.759765625, D_acc_fake = 0.81005859375, D_acc_total = 0.784912109375
+[2025-09-14 08:59:41] [INFO] Epoch 15/100, Batch 0/32, D_loss: 0.5721, G_loss: 1.4495
+[2025-09-14 09:00:31] [INFO] Epoch 15: Train Loss = 1.058373, Val Loss = 0.529539, D_loss = 0.529538725502789, G_loss = 1.0583730433136225, D_acc_real = 0.7529296875, D_acc_fake = 0.77978515625, D_acc_total = 0.766357421875
+[2025-09-14 09:00:32] [INFO] Epoch 16/100, Batch 0/32, D_loss: 0.4800, G_loss: 1.2779
+[2025-09-14 09:01:23] [INFO] Epoch 16: Train Loss = 1.061888, Val Loss = 0.553022, D_loss = 0.5530222076922655, G_loss = 1.0618878100067377, D_acc_real = 0.73974609375, D_acc_fake = 0.78857421875, D_acc_total = 0.76416015625
+[2025-09-14 09:01:25] [INFO] Epoch 17/100, Batch 0/32, D_loss: 0.5662, G_loss: 0.8862
+[2025-09-14 09:02:13] [INFO] Epoch 17: Train Loss = 0.984601, Val Loss = 0.550099, D_loss = 0.5500991847366095, G_loss = 0.9846009910106659, D_acc_real = 0.74072265625, D_acc_fake = 0.7392578125, D_acc_total = 0.739990234375
+[2025-09-14 09:02:16] [INFO] Epoch 18/100, Batch 0/32, D_loss: 0.4709, G_loss: 0.9188
+[2025-09-14 09:03:40] [INFO] Epoch 18: Train Loss = 0.969143, Val Loss = 0.568128, D_loss = 0.5681278947740793, G_loss = 0.9691432826220989, D_acc_real = 0.734375, D_acc_fake = 0.7236328125, D_acc_total = 0.72900390625
+[2025-09-14 09:03:43] [INFO] Epoch 19/100, Batch 0/32, D_loss: 0.5619, G_loss: 0.9580
+[2025-09-14 09:05:21] [INFO] Epoch 19: Train Loss = 0.917147, Val Loss = 0.590695, D_loss = 0.5906947162002325, G_loss = 0.917147271335125, D_acc_real = 0.69482421875, D_acc_fake = 0.68359375, D_acc_total = 0.689208984375
+[2025-09-14 09:05:24] [INFO] Epoch 20/100, Batch 0/32, D_loss: 0.5913, G_loss: 1.1076

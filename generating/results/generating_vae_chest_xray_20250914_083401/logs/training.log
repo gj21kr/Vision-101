@@ -1,0 +1,82 @@
+[2025-09-14 08:34:01] [INFO] Experiment started: generating_vae_chest_xray
+[2025-09-14 08:34:01] [INFO] Results will be saved to: results/generating_vae_chest_xray_20250914_083401
+[2025-09-14 08:34:01] [INFO] Configuration saved: results/generating_vae_chest_xray_20250914_083401/logs/config.json
+[2025-09-14 08:34:01] [INFO] Using device: cpu
+[2025-09-14 08:34:01] [INFO] Loading chest_xray data...
+[2025-09-14 08:34:01] [INFO] Loaded 1000 chest_xray images
+[2025-09-14 08:34:01] [INFO] Image shape: (64, 64)
+[2025-09-14 08:34:02] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/original_samples.png
+[2025-09-14 08:34:02] [INFO] VAE Architecture:
+[2025-09-14 08:34:02] [INFO] - Input dim: 4096
+[2025-09-14 08:34:02] [INFO] - Hidden dim: 512
+[2025-09-14 08:34:02] [INFO] - Latent dim: 32
+[2025-09-14 08:34:02] [INFO] - Parameters: 4,248,640
+[2025-09-14 08:34:02] [INFO] Starting VAE training...
+[2025-09-14 08:34:02] [INFO] Epoch 1: Train Loss = 113225.547363, BCE_loss = 108692.72729492188, KLD_loss = 4532.821577429771
+[2025-09-14 08:34:02] [INFO] Saving intermediate results at epoch 1...
+[2025-09-14 08:34:03] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/generated_samples_epoch_001.png
+[2025-09-14 08:34:04] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/reconstruction_comparison_epoch_001.png
+[2025-09-14 08:34:05] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/latent_interpolation_epoch_001.png
+[2025-09-14 08:34:06] [INFO] Epoch 2: Train Loss = 85505.943359, BCE_loss = 84046.8837890625, KLD_loss = 1459.0597114562988
+[2025-09-14 08:34:06] [INFO] Epoch 3: Train Loss = 84313.852783, BCE_loss = 83393.94116210938, KLD_loss = 919.9107818603516
+[2025-09-14 08:34:07] [INFO] Epoch 4: Train Loss = 84080.359619, BCE_loss = 83308.06787109375, KLD_loss = 772.2922897338867
+[2025-09-14 08:34:08] [INFO] Epoch 5: Train Loss = 84001.545410, BCE_loss = 83301.52709960938, KLD_loss = 700.0185527801514
+[2025-09-14 08:34:08] [INFO] Saving intermediate results at epoch 5...
+[2025-09-14 08:34:08] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/generated_samples_epoch_005.png
+[2025-09-14 08:34:09] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/reconstruction_comparison_epoch_005.png
+[2025-09-14 08:34:10] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/latent_interpolation_epoch_005.png
+[2025-09-14 08:34:11] [INFO] Epoch 6: Train Loss = 83922.904053, BCE_loss = 83263.94775390625, KLD_loss = 658.9560375213623
+[2025-09-14 08:34:11] [INFO] Epoch 7: Train Loss = 83777.649902, BCE_loss = 83189.68286132812, KLD_loss = 587.9670372009277
+[2025-09-14 08:34:12] [INFO] Epoch 8: Train Loss = 83756.866699, BCE_loss = 83194.224609375, KLD_loss = 562.6411991119385
+[2025-09-14 08:34:12] [INFO] Epoch 9: Train Loss = 83727.761719, BCE_loss = 83173.60400390625, KLD_loss = 554.158483505249
+[2025-09-14 08:34:13] [INFO] Epoch 10: Train Loss = 83676.656738, BCE_loss = 83178.94482421875, KLD_loss = 497.7117042541504
+[2025-09-14 08:34:13] [INFO] Saving intermediate results at epoch 10...
+[2025-09-14 08:34:14] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/generated_samples_epoch_010.png
+[2025-09-14 08:34:15] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/reconstruction_comparison_epoch_010.png
+[2025-09-14 08:34:15] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/latent_interpolation_epoch_010.png
+[2025-09-14 08:34:16] [INFO] Model checkpoint saved: results/generating_vae_chest_xray_20250914_083401/models/vae_checkpoint_epoch_010.pth
+[2025-09-14 08:34:16] [INFO] Epoch 11: Train Loss = 83559.697266, BCE_loss = 83095.71044921875, KLD_loss = 463.98738288879395
+[2025-09-14 08:34:17] [INFO] Epoch 12: Train Loss = 83567.657715, BCE_loss = 83127.29467773438, KLD_loss = 440.36268043518066
+[2025-09-14 08:34:17] [INFO] Epoch 13: Train Loss = 83489.374268, BCE_loss = 83079.11376953125, KLD_loss = 410.2604160308838
+[2025-09-14 08:34:18] [INFO] Epoch 14: Train Loss = 83450.515869, BCE_loss = 83049.65795898438, KLD_loss = 400.85709857940674
+[2025-09-14 08:34:18] [INFO] Epoch 15: Train Loss = 83438.218506, BCE_loss = 83071.263671875, KLD_loss = 366.9535102844238
+[2025-09-14 08:34:18] [INFO] Saving intermediate results at epoch 15...
+[2025-09-14 08:34:19] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/generated_samples_epoch_015.png
+[2025-09-14 08:34:20] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/reconstruction_comparison_epoch_015.png
+[2025-09-14 08:34:20] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/latent_interpolation_epoch_015.png
+[2025-09-14 08:34:21] [INFO] Epoch 16: Train Loss = 83384.399414, BCE_loss = 83034.1357421875, KLD_loss = 350.26412296295166
+[2025-09-14 08:34:21] [INFO] Epoch 17: Train Loss = 83343.878906, BCE_loss = 83023.244140625, KLD_loss = 320.6349515914917
+[2025-09-14 08:34:22] [INFO] Epoch 18: Train Loss = 83316.571045, BCE_loss = 83012.89477539062, KLD_loss = 303.67651653289795
+[2025-09-14 08:34:23] [INFO] Epoch 19: Train Loss = 83276.232666, BCE_loss = 83003.16943359375, KLD_loss = 273.0646858215332
+[2025-09-14 08:34:23] [INFO] Epoch 20: Train Loss = 83255.171631, BCE_loss = 82971.6943359375, KLD_loss = 283.4758777618408
+[2025-09-14 08:34:23] [INFO] Saving intermediate results at epoch 20...
+[2025-09-14 08:34:24] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/generated_samples_epoch_020.png
+[2025-09-14 08:34:25] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/reconstruction_comparison_epoch_020.png
+[2025-09-14 08:34:25] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/latent_interpolation_epoch_020.png
+[2025-09-14 08:34:26] [INFO] Model checkpoint saved: results/generating_vae_chest_xray_20250914_083401/models/vae_checkpoint_epoch_020.pth
+[2025-09-14 08:34:26] [INFO] Epoch 21: Train Loss = 83217.552490, BCE_loss = 82970.49951171875, KLD_loss = 247.0534086227417
+[2025-09-14 08:34:27] [INFO] Epoch 22: Train Loss = 83190.379150, BCE_loss = 82949.39404296875, KLD_loss = 240.98415851593018
+[2025-09-14 08:34:27] [INFO] Epoch 23: Train Loss = 83184.131836, BCE_loss = 82962.43994140625, KLD_loss = 221.6920042037964
+[2025-09-14 08:34:28] [INFO] Epoch 24: Train Loss = 83160.850098, BCE_loss = 82945.005859375, KLD_loss = 215.84416484832764
+[2025-09-14 08:34:28] [INFO] Epoch 25: Train Loss = 83141.368652, BCE_loss = 82941.85546875, KLD_loss = 199.51250171661377
+[2025-09-14 08:34:28] [INFO] Saving intermediate results at epoch 25...
+[2025-09-14 08:34:29] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/generated_samples_epoch_025.png
+[2025-09-14 08:34:30] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/reconstruction_comparison_epoch_025.png
+[2025-09-14 08:34:31] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/latent_interpolation_epoch_025.png
+[2025-09-14 08:34:31] [INFO] Epoch 26: Train Loss = 83125.099365, BCE_loss = 82931.91650390625, KLD_loss = 193.1824107170105
+[2025-09-14 08:34:32] [INFO] Epoch 27: Train Loss = 83123.729248, BCE_loss = 82922.84912109375, KLD_loss = 200.88129425048828
+[2025-09-14 08:34:32] [INFO] Epoch 28: Train Loss = 83118.175537, BCE_loss = 82918.50634765625, KLD_loss = 199.66894006729126
+[2025-09-14 08:34:33] [INFO] Epoch 29: Train Loss = 83099.672852, BCE_loss = 82919.93896484375, KLD_loss = 179.7343945503235
+[2025-09-14 08:34:33] [INFO] Epoch 30: Train Loss = 83098.687256, BCE_loss = 82913.2119140625, KLD_loss = 185.4745945930481
+[2025-09-14 08:34:33] [INFO] Saving intermediate results at epoch 30...
+[2025-09-14 08:34:34] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/generated_samples_epoch_030.png
+[2025-09-14 08:34:35] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/reconstruction_comparison_epoch_030.png
+[2025-09-14 08:34:36] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/latent_interpolation_epoch_030.png
+[2025-09-14 08:34:36] [INFO] Model checkpoint saved: results/generating_vae_chest_xray_20250914_083401/models/vae_checkpoint_epoch_030.pth
+[2025-09-14 08:34:36] [INFO] Training completed! Saving final results...
+[2025-09-14 08:34:36] [INFO] Training curves saved: results/generating_vae_chest_xray_20250914_083401/plots/training_curves.png
+[2025-09-14 08:34:37] [INFO] Model checkpoint saved: results/generating_vae_chest_xray_20250914_083401/models/vae_final_model.pth
+[2025-09-14 08:34:41] [INFO] Image grid saved: results/generating_vae_chest_xray_20250914_083401/images/final_generated_samples.png
+[2025-09-14 08:34:41] [INFO] Training curves saved: results/generating_vae_chest_xray_20250914_083401/plots/final_training_curves.png
+[2025-09-14 08:34:41] [INFO] Experiment completed successfully!
+[2025-09-14 08:34:41] [INFO] All results saved in: results/generating_vae_chest_xray_20250914_083401

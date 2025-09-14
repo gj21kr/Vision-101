@@ -1,0 +1,9 @@
+{
+  "algorithm": "VAE",
+  "dataset_type": "chest_xray",
+  "batch_size": 64,
+  "learning_rate": 0.001,
+  "image_size": 64,
+  "num_epochs": 30,
+  "data_path": null
+}
