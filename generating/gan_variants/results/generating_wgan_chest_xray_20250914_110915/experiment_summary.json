@@ -1,0 +1,9 @@
+{
+  "experiment_name": "generating_wgan_chest_xray",
+  "timestamp": "20250914_110915",
+  "duration": "2025-09-14T11:18:43.348303",
+  "total_epochs": 50,
+  "final_train_loss": -333.5106430053711,
+  "best_train_loss": -1671.8071594238281,
+  "results_directory": "results/generating_wgan_chest_xray_20250914_110915"
+}

@@ -1,0 +1,16 @@
+{
+  "algorithm": "WGAN_GP",
+  "dataset_type": "chest_xray",
+  "batch_size": 64,
+  "image_size": 64,
+  "nz": 100,
+  "ngf": 64,
+  "ndf": 64,
+  "lr": 0.0001,
+  "beta1": 0.0,
+  "beta2": 0.9,
+  "n_critic": 5,
+  "lambda_gp": 10,
+  "num_epochs": 5,
+  "data_path": null
+}

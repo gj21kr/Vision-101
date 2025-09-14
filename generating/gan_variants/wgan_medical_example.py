@@ -409,7 +409,7 @@ def train_medical_wgan(dataset_type='chest_xray', data_path=None, num_epochs=100
         plt.xlabel('Iteration')
         plt.ylabel('Wasserstein Distance')
         plt.grid(True)
-        plt.savefig(os.path.join(logger.results_dir, 'plots', 'wasserstein_distance_curve.png'), dpi=150, bbox_inches='tight')
+        plt.savefig(os.path.join(logger.dirs['plots'], 'wasserstein_distance_curve.png'), dpi=150, bbox_inches='tight')
         plt.close()
 
     # Save final models

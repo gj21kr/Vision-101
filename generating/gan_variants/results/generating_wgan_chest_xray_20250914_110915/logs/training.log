@@ -1,0 +1,135 @@
+[2025-09-14 11:09:15] [INFO] Experiment started: generating_wgan_chest_xray
+[2025-09-14 11:09:15] [INFO] Results will be saved to: results/generating_wgan_chest_xray_20250914_110915
+[2025-09-14 11:09:15] [INFO] Configuration saved: results/generating_wgan_chest_xray_20250914_110915/logs/config.json
+[2025-09-14 11:09:15] [INFO] Using device: cpu
+[2025-09-14 11:09:15] [INFO] Loading chest_xray data...
+[2025-09-14 11:09:15] [INFO] Loaded 1000 chest_xray images
+[2025-09-14 11:09:15] [INFO] Image shape: (64, 64)
+[2025-09-14 11:09:17] [INFO] Image grid saved: results/generating_wgan_chest_xray_20250914_110915/images/original_samples.png
+[2025-09-14 11:09:17] [INFO] Generator parameters: 3,574,656
+[2025-09-14 11:09:17] [INFO] Critic parameters: 2,761,728
+[2025-09-14 11:09:17] [INFO] Starting WGAN training...
+[2025-09-14 11:09:17] [INFO] Training strategy: 5 critic updates per 1 generator update
+[2025-09-14 11:09:29] [INFO] Epoch 1: Train Loss = -1.016231, critic_loss = -1.576775046021794, wasserstein_distance = 2.5559851927682757, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:09:29] [INFO] Saving intermediate results at epoch 1...
+[2025-09-14 11:09:30] [INFO] Current Wasserstein Distance: 11.3860
+[2025-09-14 11:09:30] [INFO] Epoch 1 - Quality Score: 0.0775
+[2025-09-14 11:09:30] [INFO] Epoch 1 - Pixel Mean: -0.2138, Std: 0.2783
+[2025-09-14 11:09:40] [INFO] Image grid saved: results/generating_wgan_chest_xray_20250914_110915/images/generated_samples_epoch_001.png
+[2025-09-14 11:09:51] [INFO] Epoch 2: Train Loss = -55.302405, critic_loss = -49.31709146499634, wasserstein_distance = 53.560182094573975, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:10:02] [INFO] Epoch 3: Train Loss = -273.873096, critic_loss = -143.3177318572998, wasserstein_distance = 149.5065803527832, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:10:13] [INFO] Epoch 4: Train Loss = -647.410530, critic_loss = -201.12445831298828, wasserstein_distance = 210.63838958740234, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:10:23] [INFO] Epoch 5: Train Loss = -1075.625702, critic_loss = -204.57677841186523, wasserstein_distance = 214.66976928710938, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:10:23] [INFO] Saving intermediate results at epoch 5...
+[2025-09-14 11:10:24] [INFO] Current Wasserstein Distance: 191.7186
+[2025-09-14 11:10:24] [INFO] Epoch 5 - Quality Score: 0.1250
+[2025-09-14 11:10:24] [INFO] Epoch 5 - Pixel Mean: -0.5125, Std: 0.3535
+[2025-09-14 11:10:34] [INFO] Image grid saved: results/generating_wgan_chest_xray_20250914_110915/images/generated_samples_epoch_005.png
+[2025-09-14 11:10:45] [INFO] Epoch 6: Train Loss = -1456.287994, critic_loss = -164.0034637451172, wasserstein_distance = 175.79547119140625, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:10:56] [INFO] Epoch 7: Train Loss = -1667.047302, critic_loss = -107.5851058959961, wasserstein_distance = 120.19677734375, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:11:06] [INFO] Epoch 8: Train Loss = -1671.807159, critic_loss = -58.505836486816406, wasserstein_distance = 65.61703491210938, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:11:17] [INFO] Epoch 9: Train Loss = -1524.321747, critic_loss = -37.97173309326172, wasserstein_distance = 41.399383544921875, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:11:27] [INFO] Epoch 10: Train Loss = -1355.807007, critic_loss = -34.502891540527344, wasserstein_distance = 36.32574462890625, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:11:27] [INFO] Saving intermediate results at epoch 10...
+[2025-09-14 11:11:28] [INFO] Current Wasserstein Distance: 33.5981
+[2025-09-14 11:11:28] [INFO] Epoch 10 - Quality Score: 0.1711
+[2025-09-14 11:11:28] [INFO] Epoch 10 - Pixel Mean: -0.5786, Std: 0.4137
+[2025-09-14 11:11:32] [INFO] Image grid saved: results/generating_wgan_chest_xray_20250914_110915/images/generated_samples_epoch_010.png
+[2025-09-14 11:11:33] [INFO] Model checkpoint saved: results/generating_wgan_chest_xray_20250914_110915/models/wgan_generator_epoch_010.pth
+[2025-09-14 11:11:33] [INFO] Model checkpoint saved: results/generating_wgan_chest_xray_20250914_110915/models/wgan_critic_epoch_010.pth
+[2025-09-14 11:11:40] [INFO] Epoch 11: Train Loss = -1217.229523, critic_loss = -33.75403594970703, wasserstein_distance = 34.949615478515625, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:11:47] [INFO] Epoch 12: Train Loss = -1106.369751, critic_loss = -34.47358703613281, wasserstein_distance = 35.319427490234375, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:11:54] [INFO] Epoch 13: Train Loss = -1021.306580, critic_loss = -37.07439422607422, wasserstein_distance = 38.20855712890625, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:12:02] [INFO] Epoch 14: Train Loss = -959.680649, critic_loss = -40.65918731689453, wasserstein_distance = 41.41815185546875, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:12:09] [INFO] Epoch 15: Train Loss = -916.625259, critic_loss = -46.0262336730957, wasserstein_distance = 47.20222473144531, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:12:09] [INFO] Saving intermediate results at epoch 15...
+[2025-09-14 11:12:10] [INFO] Current Wasserstein Distance: 49.8091
+[2025-09-14 11:12:10] [INFO] Epoch 15 - Quality Score: 0.2061
+[2025-09-14 11:12:10] [INFO] Epoch 15 - Pixel Mean: -0.5697, Std: 0.4540
+[2025-09-14 11:12:13] [INFO] Image grid saved: results/generating_wgan_chest_xray_20250914_110915/images/generated_samples_epoch_015.png
+[2025-09-14 11:12:21] [INFO] Epoch 16: Train Loss = -881.481598, critic_loss = -54.79111099243164, wasserstein_distance = 55.60340881347656, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:12:28] [INFO] Epoch 17: Train Loss = -847.424103, critic_loss = -66.76995849609375, wasserstein_distance = 67.57534790039062, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:12:35] [INFO] Epoch 18: Train Loss = -812.460724, critic_loss = -81.26046371459961, wasserstein_distance = 81.47636413574219, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:12:42] [INFO] Epoch 19: Train Loss = -772.675964, critic_loss = -92.24142074584961, wasserstein_distance = 92.16864013671875, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:12:52] [INFO] Epoch 20: Train Loss = -766.765167, critic_loss = -91.62613296508789, wasserstein_distance = 94.94480895996094, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:12:52] [INFO] Saving intermediate results at epoch 20...
+[2025-09-14 11:12:52] [INFO] Current Wasserstein Distance: 85.0762
+[2025-09-14 11:12:52] [INFO] Epoch 20 - Quality Score: 0.1900
+[2025-09-14 11:12:52] [INFO] Epoch 20 - Pixel Mean: -0.5667, Std: 0.4359
+[2025-09-14 11:12:57] [INFO] Image grid saved: results/generating_wgan_chest_xray_20250914_110915/images/generated_samples_epoch_020.png
+[2025-09-14 11:12:58] [INFO] Model checkpoint saved: results/generating_wgan_chest_xray_20250914_110915/models/wgan_generator_epoch_020.pth
+[2025-09-14 11:12:58] [INFO] Model checkpoint saved: results/generating_wgan_chest_xray_20250914_110915/models/wgan_critic_epoch_020.pth
+[2025-09-14 11:13:08] [INFO] Epoch 21: Train Loss = -811.734711, critic_loss = -75.91221618652344, wasserstein_distance = 79.67518615722656, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:13:19] [INFO] Epoch 22: Train Loss = -897.681870, critic_loss = -63.784915924072266, wasserstein_distance = 64.056396484375, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:13:28] [INFO] Epoch 23: Train Loss = -941.067886, critic_loss = -60.406681060791016, wasserstein_distance = 60.920562744140625, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:13:38] [INFO] Epoch 24: Train Loss = -933.435303, critic_loss = -54.90528106689453, wasserstein_distance = 57.95008850097656, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:13:47] [INFO] Epoch 25: Train Loss = -904.072571, critic_loss = -47.23231887817383, wasserstein_distance = 50.78425598144531, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:13:47] [INFO] Saving intermediate results at epoch 25...
+[2025-09-14 11:13:47] [INFO] Current Wasserstein Distance: 44.7703
+[2025-09-14 11:13:47] [INFO] Epoch 25 - Quality Score: 0.2028
+[2025-09-14 11:13:47] [INFO] Epoch 25 - Pixel Mean: -0.5695, Std: 0.4503
+[2025-09-14 11:13:53] [INFO] Image grid saved: results/generating_wgan_chest_xray_20250914_110915/images/generated_samples_epoch_025.png
+[2025-09-14 11:14:03] [INFO] Epoch 26: Train Loss = -860.014160, critic_loss = -42.872398376464844, wasserstein_distance = 46.11549377441406, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:14:12] [INFO] Epoch 27: Train Loss = -816.815918, critic_loss = -38.339725494384766, wasserstein_distance = 40.91615295410156, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:14:22] [INFO] Epoch 28: Train Loss = -780.377335, critic_loss = -40.529483795166016, wasserstein_distance = 41.74018859863281, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:14:32] [INFO] Epoch 29: Train Loss = -748.219467, critic_loss = -43.90189743041992, wasserstein_distance = 44.77032470703125, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:14:42] [INFO] Epoch 30: Train Loss = -721.709030, critic_loss = -45.89085006713867, wasserstein_distance = 46.70347595214844, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:14:42] [INFO] Saving intermediate results at epoch 30...
+[2025-09-14 11:14:42] [INFO] Current Wasserstein Distance: 45.6810
+[2025-09-14 11:14:42] [INFO] Epoch 30 - Quality Score: 0.2221
+[2025-09-14 11:14:42] [INFO] Epoch 30 - Pixel Mean: -0.5666, Std: 0.4712
+[2025-09-14 11:14:48] [INFO] Image grid saved: results/generating_wgan_chest_xray_20250914_110915/images/generated_samples_epoch_030.png
+[2025-09-14 11:14:48] [INFO] Model checkpoint saved: results/generating_wgan_chest_xray_20250914_110915/models/wgan_generator_epoch_030.pth
+[2025-09-14 11:14:48] [INFO] Model checkpoint saved: results/generating_wgan_chest_xray_20250914_110915/models/wgan_critic_epoch_030.pth
+[2025-09-14 11:14:59] [INFO] Epoch 31: Train Loss = -701.758606, critic_loss = -45.976253509521484, wasserstein_distance = 46.71330261230469, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:15:08] [INFO] Epoch 32: Train Loss = -687.412231, critic_loss = -43.49957275390625, wasserstein_distance = 44.45387268066406, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:15:18] [INFO] Epoch 33: Train Loss = -665.258423, critic_loss = -39.3225212097168, wasserstein_distance = 41.25762939453125, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:15:27] [INFO] Epoch 34: Train Loss = -639.775314, critic_loss = -32.669960021972656, wasserstein_distance = 33.660125732421875, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:15:37] [INFO] Epoch 35: Train Loss = -615.503387, critic_loss = -29.093177795410156, wasserstein_distance = 30.488250732421875, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:15:37] [INFO] Saving intermediate results at epoch 35...
+[2025-09-14 11:15:37] [INFO] Current Wasserstein Distance: 25.6268
+[2025-09-14 11:15:37] [INFO] Epoch 35 - Quality Score: 0.2289
+[2025-09-14 11:15:37] [INFO] Epoch 35 - Pixel Mean: -0.5628, Std: 0.4785
+[2025-09-14 11:15:43] [INFO] Image grid saved: results/generating_wgan_chest_xray_20250914_110915/images/generated_samples_epoch_035.png
+[2025-09-14 11:15:53] [INFO] Epoch 36: Train Loss = -591.441544, critic_loss = -26.105796813964844, wasserstein_distance = 28.064178466796875, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:16:03] [INFO] Epoch 37: Train Loss = -568.861816, critic_loss = -22.00634002685547, wasserstein_distance = 24.1551513671875, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:16:13] [INFO] Epoch 38: Train Loss = -555.463593, critic_loss = -17.617538452148438, wasserstein_distance = 19.35302734375, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:16:22] [INFO] Epoch 39: Train Loss = -546.409058, critic_loss = -11.610363006591797, wasserstein_distance = 13.549514770507812, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:16:32] [INFO] Epoch 40: Train Loss = -536.214722, critic_loss = -9.9744873046875, wasserstein_distance = 11.268875122070312, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:16:32] [INFO] Saving intermediate results at epoch 40...
+[2025-09-14 11:16:32] [INFO] Current Wasserstein Distance: 8.2411
+[2025-09-14 11:16:32] [INFO] Epoch 40 - Quality Score: 0.2340
+[2025-09-14 11:16:32] [INFO] Epoch 40 - Pixel Mean: -0.5654, Std: 0.4837
+[2025-09-14 11:16:38] [INFO] Image grid saved: results/generating_wgan_chest_xray_20250914_110915/images/generated_samples_epoch_040.png
+[2025-09-14 11:16:38] [INFO] Model checkpoint saved: results/generating_wgan_chest_xray_20250914_110915/models/wgan_generator_epoch_040.pth
+[2025-09-14 11:16:38] [INFO] Model checkpoint saved: results/generating_wgan_chest_xray_20250914_110915/models/wgan_critic_epoch_040.pth
+[2025-09-14 11:16:48] [INFO] Epoch 41: Train Loss = -524.504684, critic_loss = -9.18136215209961, wasserstein_distance = 9.504837036132812, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:16:58] [INFO] Epoch 42: Train Loss = -505.599831, critic_loss = -9.602535247802734, wasserstein_distance = 10.422950744628906, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:17:09] [INFO] Epoch 43: Train Loss = -476.917778, critic_loss = -10.325454711914062, wasserstein_distance = 10.897987365722656, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:17:20] [INFO] Epoch 44: Train Loss = -447.806168, critic_loss = -10.562191009521484, wasserstein_distance = 11.230476379394531, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:17:31] [INFO] Epoch 45: Train Loss = -414.480156, critic_loss = -10.606081008911133, wasserstein_distance = 11.116943359375, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:17:31] [INFO] Saving intermediate results at epoch 45...
+[2025-09-14 11:17:31] [INFO] Current Wasserstein Distance: 10.2135
+[2025-09-14 11:17:31] [INFO] Epoch 45 - Quality Score: 0.2280
+[2025-09-14 11:17:31] [INFO] Epoch 45 - Pixel Mean: -0.5857, Std: 0.4775
+[2025-09-14 11:17:41] [INFO] Image grid saved: results/generating_wgan_chest_xray_20250914_110915/images/generated_samples_epoch_045.png
+[2025-09-14 11:17:51] [INFO] Epoch 46: Train Loss = -386.918625, critic_loss = -10.852319717407227, wasserstein_distance = 11.694114685058594, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:17:58] [INFO] Epoch 47: Train Loss = -367.663437, critic_loss = -10.876260757446289, wasserstein_distance = 11.166221618652344, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:18:08] [INFO] Epoch 48: Train Loss = -354.390121, critic_loss = -10.794631958007812, wasserstein_distance = 11.346244812011719, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:18:18] [INFO] Epoch 49: Train Loss = -342.981339, critic_loss = -11.095426559448242, wasserstein_distance = 11.713935852050781, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:18:28] [INFO] Epoch 50: Train Loss = -333.510643, critic_loss = -11.491987228393555, wasserstein_distance = 12.040908813476562, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:18:28] [INFO] Saving intermediate results at epoch 50...
+[2025-09-14 11:18:28] [INFO] Current Wasserstein Distance: 10.8258
+[2025-09-14 11:18:28] [INFO] Epoch 50 - Quality Score: 0.2325
+[2025-09-14 11:18:28] [INFO] Epoch 50 - Pixel Mean: -0.5782, Std: 0.4821
+[2025-09-14 11:18:34] [INFO] Image grid saved: results/generating_wgan_chest_xray_20250914_110915/images/generated_samples_epoch_050.png
+[2025-09-14 11:18:34] [INFO] Model checkpoint saved: results/generating_wgan_chest_xray_20250914_110915/models/wgan_generator_epoch_050.pth
+[2025-09-14 11:18:34] [INFO] Model checkpoint saved: results/generating_wgan_chest_xray_20250914_110915/models/wgan_critic_epoch_050.pth
+[2025-09-14 11:18:34] [INFO] Training completed! Saving final results...
+[2025-09-14 11:18:35] [INFO] Training curves saved: results/generating_wgan_chest_xray_20250914_110915/plots/training_curves.png
+[2025-09-14 11:18:35] [INFO] Model checkpoint saved: results/generating_wgan_chest_xray_20250914_110915/models/wgan_generator_final.pth
+[2025-09-14 11:18:36] [INFO] Model checkpoint saved: results/generating_wgan_chest_xray_20250914_110915/models/wgan_critic_final.pth
+[2025-09-14 11:18:42] [INFO] Image grid saved: results/generating_wgan_chest_xray_20250914_110915/images/final_generated_samples.png
+[2025-09-14 11:18:43] [INFO] Training curves saved: results/generating_wgan_chest_xray_20250914_110915/plots/final_training_curves.png
+[2025-09-14 11:18:43] [INFO] Experiment completed successfully!
+[2025-09-14 11:18:43] [INFO] All results saved in: results/generating_wgan_chest_xray_20250914_110915

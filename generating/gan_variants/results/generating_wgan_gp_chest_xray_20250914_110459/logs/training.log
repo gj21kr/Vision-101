@@ -1,0 +1,37 @@
+[2025-09-14 11:04:59] [INFO] Experiment started: generating_wgan_gp_chest_xray
+[2025-09-14 11:04:59] [INFO] Results will be saved to: results/generating_wgan_gp_chest_xray_20250914_110459
+[2025-09-14 11:04:59] [INFO] Quick test mode: training for 5 epochs only
+[2025-09-14 11:04:59] [INFO] Configuration saved: results/generating_wgan_gp_chest_xray_20250914_110459/logs/config.json
+[2025-09-14 11:04:59] [INFO] Using device: cpu
+[2025-09-14 11:04:59] [INFO] Loading chest_xray data...
+[2025-09-14 11:05:00] [INFO] Loaded 1000 chest_xray images
+[2025-09-14 11:05:00] [INFO] Image shape: (64, 64)
+[2025-09-14 11:05:01] [INFO] Image grid saved: results/generating_wgan_gp_chest_xray_20250914_110459/images/original_samples.png
+[2025-09-14 11:05:01] [INFO] Generator parameters: 3,574,656
+[2025-09-14 11:05:01] [INFO] Critic parameters: 2,761,728
+[2025-09-14 11:05:01] [INFO] Starting WGAN-GP training...
+[2025-09-14 11:05:01] [INFO] Training strategy: 5 critic updates per 1 generator update
+[2025-09-14 11:05:01] [INFO] Gradient penalty weight: 10
+[2025-09-14 11:05:29] [INFO] Epoch 1: Train Loss = -2.100618, critic_loss = 0.5735200643539429, gradient_penalty = 0.6921701045939699, wasserstein_distance = 6.3481807751522865, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:05:29] [INFO] Saving intermediate results at epoch 1...
+[2025-09-14 11:05:29] [INFO] Current Wasserstein Distance: 32.8399
+[2025-09-14 11:05:29] [INFO] Epoch 1 - Quality Score: 0.0366
+[2025-09-14 11:05:29] [INFO] Epoch 1 - Pixel Mean: -0.1345, Std: 0.1914
+[2025-09-14 11:05:35] [INFO] Image grid saved: results/generating_wgan_gp_chest_xray_20250914_110459/images/generated_samples_epoch_001.png
+[2025-09-14 11:06:00] [INFO] Epoch 2: Train Loss = -19.274384, critic_loss = -53.4526948928833, gradient_penalty = 1.5365530417766422, wasserstein_distance = 68.81822544336319, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:06:27] [INFO] Epoch 3: Train Loss = -33.040106, critic_loss = -52.66633081436157, gradient_penalty = 2.131271243095398, wasserstein_distance = 73.97904324531555, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:06:54] [INFO] Epoch 4: Train Loss = -40.977202, critic_loss = -45.6165246963501, gradient_penalty = 1.697367176413536, wasserstein_distance = 62.59019637107849, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:07:20] [INFO] Epoch 5: Train Loss = -42.554358, critic_loss = -41.955320835113525, gradient_penalty = 1.4957851320505142, wasserstein_distance = 56.91317176818848, critic_updates = 16, generator_updates = 4
+[2025-09-14 11:07:20] [INFO] Saving intermediate results at epoch 5...
+[2025-09-14 11:07:20] [INFO] Current Wasserstein Distance: 58.2196
+[2025-09-14 11:07:20] [INFO] Epoch 5 - Quality Score: 0.0933
+[2025-09-14 11:07:20] [INFO] Epoch 5 - Pixel Mean: -0.3049, Std: 0.3055
+[2025-09-14 11:07:26] [INFO] Image grid saved: results/generating_wgan_gp_chest_xray_20250914_110459/images/generated_samples_epoch_005.png
+[2025-09-14 11:07:26] [INFO] Training completed! Saving final results...
+[2025-09-14 11:07:28] [INFO] Training curves saved: results/generating_wgan_gp_chest_xray_20250914_110459/plots/training_curves.png
+[2025-09-14 11:07:29] [INFO] Model checkpoint saved: results/generating_wgan_gp_chest_xray_20250914_110459/models/wgan_gp_generator_final.pth
+[2025-09-14 11:07:29] [INFO] Model checkpoint saved: results/generating_wgan_gp_chest_xray_20250914_110459/models/wgan_gp_critic_final.pth
+[2025-09-14 11:07:35] [INFO] Image grid saved: results/generating_wgan_gp_chest_xray_20250914_110459/images/final_generated_samples.png
+[2025-09-14 11:07:37] [INFO] Training curves saved: results/generating_wgan_gp_chest_xray_20250914_110459/plots/final_training_curves.png
+[2025-09-14 11:07:37] [INFO] Experiment completed successfully!
+[2025-09-14 11:07:37] [INFO] All results saved in: results/generating_wgan_gp_chest_xray_20250914_110459
