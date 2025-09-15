@@ -1,0 +1,9 @@
+{
+  "algorithm": "Medical Super-Resolution",
+  "dataset_type": "chest_xray",
+  "scale_factor": 2,
+  "batch_size": 8,
+  "image_size": 128,
+  "learning_rate": 0.0001,
+  "num_epochs": 30
+}

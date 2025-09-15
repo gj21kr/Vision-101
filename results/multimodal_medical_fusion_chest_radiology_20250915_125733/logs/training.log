@@ -1,0 +1,4 @@
+[2025-09-15 12:57:33] [INFO] Experiment started: multimodal_medical_fusion_chest_radiology
+[2025-09-15 12:57:33] [INFO] Results will be saved to: results/multimodal_medical_fusion_chest_radiology_20250915_125733
+[2025-09-15 12:57:33] [INFO] Using device: cpu
+[2025-09-15 12:58:08] [INFO] Starting multimodal fusion training...

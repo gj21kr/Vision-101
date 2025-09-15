@@ -112,14 +112,15 @@ class MultimodalMedicalDataset(Dataset):
         # 임상 정보
         age = np.random.randint(20, 90)
         gender = np.random.choice(['M', 'F'])
-        symptoms = np.random.choice([
+        symptom_list = [
             ['cough', 'fever'],
             ['shortness of breath'],
             ['chest pain'],
             ['fatigue'],
             ['cough', 'sputum'],
             ['no symptoms']
-        ])
+        ]
+        symptoms = symptom_list[np.random.randint(len(symptom_list))]
 
         # 영상 판독 보고서 생성
         findings = self._generate_radiology_report(seed)
@@ -404,8 +405,8 @@ class MultimodalFusionNet(nn.Module):
             nn.BatchNorm1d(128),
             nn.ReLU(),
             nn.Dropout(0.3),
-            nn.Linear(128, 256),
-            nn.BatchNorm1d(256),
+            nn.Linear(128, 512),
+            nn.BatchNorm1d(512),
             nn.ReLU()
         )
 
@@ -413,12 +414,12 @@ class MultimodalFusionNet(nn.Module):
         self.cross_attention = CrossModalAttention(
             vision_dim=512,
             text_dim=512,  # bidirectional LSTM: 256*2
-            hidden_dim=256
+            hidden_dim=512
         )
 
         # 융합 레이어
         self.fusion_layer = nn.Sequential(
-            nn.Linear(512 + 256 + 256, 512),  # vision + text + clinical
+            nn.Linear(512 + 512 + 512, 512),  # vision + text + clinical
             nn.BatchNorm1d(512),
             nn.ReLU(),
             nn.Dropout(0.4),
@@ -493,8 +494,10 @@ class MultimodalFusionNet(nn.Module):
                 embedded = self.text_embedding(text_tensor)  # [B, seq_len, 128]
                 lstm_out, (hidden, cell) = self.text_encoder(embedded)
 
-                # 마지막 히든 스테이트 사용
-                text_feature = hidden[-1]  # [B, 512] (bidirectional)
+                # 마지막 레이어의 양방향 히든 스테이트를 결합
+                # hidden shape: (num_layers * 2, B, hidden_size)
+                # 마지막 레이어의 forward (hidden[-2])와 backward (hidden[-1])를 결합
+                text_feature = torch.cat((hidden[-2,:,:], hidden[-1,:,:]), dim=1) # [B, 512]
                 text_features_list.append(text_feature)
 
         if text_features_list:
@@ -504,9 +507,9 @@ class MultimodalFusionNet(nn.Module):
 
         # 3. 임상 데이터 특징 추출
         if clinical_data.size(1) > 1:
-            clinical_features = self.clinical_encoder(clinical_data)  # [B, 256]
+            clinical_features = self.clinical_encoder(clinical_data)  # [B, 512]
         else:
-            clinical_features = torch.zeros(batch_size, 256, device=clinical_data.device)
+            clinical_features = torch.zeros(batch_size, 512, device=clinical_data.device)
 
         # 4. 크로스 모달 어텐션 (선택적)
         if vision_features and text_features_list:
@@ -516,7 +519,7 @@ class MultimodalFusionNet(nn.Module):
             attended_vision, attention_weights = self.cross_attention(
                 vision_reshaped, text_reshaped
             )
-            vision_attended = attended_vision.squeeze(1)  # [B, 512]
+            vision_attended = attended_vision.squeeze(1)
         else:
             vision_attended = vision_pooled
             attention_weights = None
@@ -536,8 +539,8 @@ class MultimodalFusionNet(nn.Module):
         # 가중 평균 적용
         weighted_features = (
             modality_weights[:, 0:1] * vision_attended +
-            modality_weights[:, 1:2] * text_combined[:, :512] +
-            modality_weights[:, 2:3] * clinical_features[:, :512]
+            modality_weights[:, 1:2] * text_combined +
+            modality_weights[:, 2:3] * clinical_features
         )
 
         # 최종 분류

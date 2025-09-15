@@ -562,10 +562,13 @@ def train_medical_super_resolution(dataset_type='chest_xray', scale_factor=2, nu
                 plt.close()
 
         # Log metrics
-        logger.log_metric("train_loss", avg_train_loss, epoch)
-        logger.log_metric("val_loss", avg_val_loss, epoch)
-        logger.log_metric("psnr", avg_psnr, epoch)
-        logger.log_metric("ssim", avg_ssim, epoch)
+        logger.log_metrics(
+            epoch + 1,
+            avg_train_loss,
+            avg_val_loss,
+            ssim=avg_ssim,
+            psnr=avg_psnr
+        )
 
     # Plot training curves
     plt.figure(figsize=(20, 5))

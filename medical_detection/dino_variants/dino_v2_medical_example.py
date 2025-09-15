@@ -480,10 +480,10 @@ class MedicalDinoV2(nn.Module):
         features, backbone_attentions = self.backbone(images)  # [B, hidden_dim, H, W]
 
         B, C, H, W = features.shape
-        features = features.flatten(2).permute(2, 0, 1)  # [H*W, B, C]
+        features = features.flatten(2).transpose(1, 2)  # [B, H*W, C]
 
         # 쿼리 임베딩
-        query_embed = self.query_embed.weight.unsqueeze(1).repeat(1, batch_size, 1)
+        query_embed = self.query_embed.weight.unsqueeze(0).repeat(batch_size, 1, 1)
 
         # 디코더
         decoder_output = query_embed
@@ -494,8 +494,8 @@ class MedicalDinoV2(nn.Module):
             decoder_attentions.append(cross_attn)
 
         # 예측
-        class_logits = self.class_embed(decoder_output.transpose(0, 1))
-        bbox_coords = self.bbox_embed(decoder_output.transpose(0, 1))
+        class_logits = self.class_embed(decoder_output)
+        bbox_coords = self.bbox_embed(decoder_output)
 
         return {
             'pred_logits': class_logits,
