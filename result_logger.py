@@ -432,13 +432,18 @@ def create_logger_for_specialized_modalities(algorithm_name, dataset_type):
     exp_name = f"specialized_modalities_{algorithm_name}_{dataset_type}"
     return ResultLogger(exp_name)
 
+def create_logger_for_medical_modalities(algorithm_name, dataset_type):
+    """Create logger for specialized medical modalities"""
+    exp_name = f"medical_modalities_{algorithm_name}_{dataset_type}"
+    return ResultLogger(exp_name)
+
 def create_logger_for_medical_synthesis(algorithm_name, dataset_type):
     """Create a logger for medical image synthesis algorithms"""
     exp_name = f"medical_synthesis_{algorithm_name}_{dataset_type}"
     return ResultLogger(exp_name)
 
 def create_logger_for_clinical_ai(algorithm_name, dataset_type):
-    """Create a logger for clinical AI algorithms"""
+    """Create logger for clinical AI applications"""
     exp_name = f"clinical_ai_{algorithm_name}_{dataset_type}"
     return ResultLogger(exp_name)
 
@@ -448,7 +453,7 @@ def create_logger_for_multimodal_medical(algorithm_name, dataset_type):
     return ResultLogger(exp_name)
 
 def create_logger_for_temporal_medical(algorithm_name, dataset_type):
-    """Create a logger for temporal medical analysis algorithms"""
+    """Create logger for temporal medical analysis"""
     exp_name = f"temporal_medical_{algorithm_name}_{dataset_type}"
     return ResultLogger(exp_name)
 

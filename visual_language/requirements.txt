@@ -1,0 +1,7 @@
+transformers
+torch
+Pillow
+requests
+groundingdino-py
+supervision
+segment-anything
