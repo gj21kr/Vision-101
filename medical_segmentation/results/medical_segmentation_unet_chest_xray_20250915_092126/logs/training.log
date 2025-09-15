@@ -1,0 +1,6 @@
+[2025-09-15 09:21:26] [INFO] Experiment started: medical_segmentation_unet_chest_xray
+[2025-09-15 09:21:26] [INFO] Results will be saved to: results/medical_segmentation_unet_chest_xray_20250915_092126
+[2025-09-15 09:21:26] [INFO] Configuration saved: results/medical_segmentation_unet_chest_xray_20250915_092126/logs/config.json
+[2025-09-15 09:21:26] [INFO] Using device: cpu
+[2025-09-15 09:21:26] [INFO] Loading chest_xray segmentation data...
+[2025-09-15 09:21:29] [INFO] Training samples: 640, Validation samples: 160

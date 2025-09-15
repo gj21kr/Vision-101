@@ -1,0 +1,11 @@
+{
+  "algorithm": "Medical U-Net",
+  "dataset_type": "chest_xray",
+  "batch_size": 8,
+  "image_size": 256,
+  "learning_rate": 0.0001,
+  "n_channels": 1,
+  "n_classes": 2,
+  "num_epochs": 30,
+  "data_path": null
+}

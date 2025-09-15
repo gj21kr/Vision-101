@@ -109,7 +109,7 @@ class ResultLogger:
         self.log(f"Image saved: {filepath}")
 
     def save_image_grid(self, images: List[np.ndarray], filename: str, titles: List[str] = None,
-                       rows: int = None, cols: int = None, cmap: str = 'gray'):
+                       rows: int = None, cols: int = None, nrow: int = None, cmap: str = 'gray'):
         """
         여러 이미지를 그리드로 저장
 
@@ -118,11 +118,16 @@ class ResultLogger:
             filename: 파일명
             titles: 각 이미지의 제목 리스트
             rows, cols: 그리드 크기 (None이면 자동 계산)
+            nrow: 행 개수 (torchvision 호환성을 위해)
             cmap: 컬러맵
         """
         n_images = len(images)
 
-        if rows is None and cols is None:
+        # Handle nrow parameter for torchvision compatibility
+        if nrow is not None:
+            cols = nrow
+            rows = int(np.ceil(n_images / cols))
+        elif rows is None and cols is None:
             cols = int(np.ceil(np.sqrt(n_images)))
             rows = int(np.ceil(n_images / cols))
         elif rows is None:
@@ -390,6 +395,61 @@ def create_logger_for_generating(algorithm_name: str, dataset_type: str = ""):
     exp_name = f"generating_{algorithm_name}"
     if dataset_type:
         exp_name += f"_{dataset_type}"
+    return ResultLogger(exp_name)
+
+def create_logger_for_medical_segmentation(algorithm_name, dataset_type):
+    """Create a logger for medical segmentation algorithms"""
+    exp_name = f"medical_segmentation_{algorithm_name}_{dataset_type}"
+    return ResultLogger(exp_name)
+
+def create_logger_for_medical_detection(algorithm_name, dataset_type):
+    """Create a logger for medical detection algorithms"""
+    exp_name = f"medical_detection_{algorithm_name}_{dataset_type}"
+    return ResultLogger(exp_name)
+
+def create_logger_for_medical_registration(algorithm_name, dataset_type):
+    """Create a logger for medical registration algorithms"""
+    exp_name = f"medical_registration_{algorithm_name}_{dataset_type}"
+    return ResultLogger(exp_name)
+
+def create_logger_for_medical_enhancement(algorithm_name, dataset_type):
+    """Create a logger for medical enhancement algorithms"""
+    exp_name = f"medical_enhancement_{algorithm_name}_{dataset_type}"
+    return ResultLogger(exp_name)
+
+def create_logger_for_medical_cad(algorithm_name, dataset_type):
+    """Create a logger for computer-aided diagnosis algorithms"""
+    exp_name = f"medical_cad_{algorithm_name}_{dataset_type}"
+    return ResultLogger(exp_name)
+
+def create_logger_for_medical_3d(algorithm_name, dataset_type):
+    """Create a logger for 3D medical imaging algorithms"""
+    exp_name = f"medical_3d_{algorithm_name}_{dataset_type}"
+    return ResultLogger(exp_name)
+
+def create_logger_for_specialized_modalities(algorithm_name, dataset_type):
+    """Create a logger for specialized medical modality algorithms"""
+    exp_name = f"specialized_modalities_{algorithm_name}_{dataset_type}"
+    return ResultLogger(exp_name)
+
+def create_logger_for_medical_synthesis(algorithm_name, dataset_type):
+    """Create a logger for medical image synthesis algorithms"""
+    exp_name = f"medical_synthesis_{algorithm_name}_{dataset_type}"
+    return ResultLogger(exp_name)
+
+def create_logger_for_clinical_ai(algorithm_name, dataset_type):
+    """Create a logger for clinical AI algorithms"""
+    exp_name = f"clinical_ai_{algorithm_name}_{dataset_type}"
+    return ResultLogger(exp_name)
+
+def create_logger_for_multimodal_medical(algorithm_name, dataset_type):
+    """Create a logger for multi-modal medical AI algorithms"""
+    exp_name = f"multimodal_medical_{algorithm_name}_{dataset_type}"
+    return ResultLogger(exp_name)
+
+def create_logger_for_temporal_medical(algorithm_name, dataset_type):
+    """Create a logger for temporal medical analysis algorithms"""
+    exp_name = f"temporal_medical_{algorithm_name}_{dataset_type}"
     return ResultLogger(exp_name)
 
 def create_logger_for_3d(algorithm_name: str, scene_type: str = ""):
