@@ -1,0 +1,4 @@
+[2025-09-15 12:20:52] [INFO] Experiment started: clinical_ai_note_generation_medical_notes
+[2025-09-15 12:20:52] [INFO] Results will be saved to: results/clinical_ai_note_generation_medical_notes_20250915_122052
+[2025-09-15 12:20:53] [INFO] Using device: cpu
+[2025-09-15 12:20:53] [INFO] Starting medical note generation training...

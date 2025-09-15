@@ -522,16 +522,29 @@ class ClinicalDataset(Dataset):
         if 'findings' in case:
             features.extend(case['findings'])
 
+        # 고정 길이로 패딩 (최대 길이를 50으로 설정)
+        max_features = 50
+        if len(features) < max_features:
+            features.extend([0.0] * (max_features - len(features)))
+        elif len(features) > max_features:
+            features = features[:max_features]
+
         features = torch.tensor(features, dtype=torch.float32)
         diagnosis = torch.tensor(case['diagnosis'], dtype=torch.long)
         prognosis_risk = torch.tensor(case['prognosis_risk'], dtype=torch.float32)
+
+        # case_data에서 가변 길이 필드를 제외하고 반환
+        case_info = {
+            'diagnosis_name': case.get('diagnosis', 0),
+            'patient_type': self.data_type
+        }
 
         return {
             'image': image,
             'features': features,
             'diagnosis': diagnosis,
             'prognosis_risk': prognosis_risk,
-            'case_data': case
+            'case_data': case_info
         }
 
 # 임상 의사결정 지원 네트워크
@@ -662,9 +675,8 @@ def train_clinical_decision_support(dataset_type='cardiology', num_epochs=50, ba
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
     # 모델 설정
-    # 첫 번째 샘플로 feature 차원 확인
-    sample = dataset[0]
-    num_clinical_features = sample['features'].shape[0]
+    # 고정된 feature 차원 사용 (패딩된 크기)
+    num_clinical_features = 50  # 패딩된 고정 크기
 
     model = ClinicalDecisionSupportNet(
         num_clinical_features=num_clinical_features,
@@ -773,12 +785,12 @@ def train_clinical_decision_support(dataset_type='cardiology', num_epochs=50, ba
         scheduler.step(avg_val_loss)
 
         # 메트릭 저장
-        logger.save_metrics({
-            'epoch': epoch + 1,
-            'train_loss': avg_train_loss,
-            'val_loss': avg_val_loss,
-            'diagnosis_accuracy': diagnosis_accuracy,
-        })
+        logger.log_metrics(
+            epoch + 1,
+            avg_train_loss,
+            avg_val_loss,
+            diagnosis_accuracy=diagnosis_accuracy,
+        )
 
         # 중간 결과 저장 (매 10 에포크)
         if (epoch + 1) % 10 == 0:

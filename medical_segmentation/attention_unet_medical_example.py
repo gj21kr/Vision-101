@@ -237,22 +237,22 @@ class MedicalSegmentationDataset(Dataset):
         image, mask = self._generate_medical_sample()
 
         if self.transform:
-            # Apply same transform to both image and mask
+            # Apply transform to image. For masks, we should not normalize.
             seed = np.random.randint(2147483647)
 
             np.random.seed(seed)
             torch.manual_seed(seed)
             image = self.transform(image)
 
+            # For the mask, we only apply geometric transformations and convert to a LongTensor.
             np.random.seed(seed)
             torch.manual_seed(seed)
-            mask = self.transform(mask)
-
-        # Convert mask to long tensor for segmentation
-        if isinstance(mask, torch.Tensor):
-            mask = mask.long().squeeze(0)
+            mask_transform = transforms.Resize((self.image_size, self.image_size))
+            mask = mask_transform(mask)
+            mask = torch.from_numpy(np.array(mask, dtype=np.uint8)).long()
         else:
-            mask = torch.tensor(mask, dtype=torch.long)
+            image = transforms.ToTensor()(image)
+            mask = torch.from_numpy(np.array(mask, dtype=np.uint8)).long()
 
         return image, mask
 

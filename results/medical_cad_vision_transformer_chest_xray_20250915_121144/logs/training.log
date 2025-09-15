@@ -1,0 +1,7 @@
+[2025-09-15 12:11:44] [INFO] Experiment started: medical_cad_vision_transformer_chest_xray
+[2025-09-15 12:11:44] [INFO] Results will be saved to: results/medical_cad_vision_transformer_chest_xray_20250915_121144
+[2025-09-15 12:11:44] [INFO] Configuration saved: results/medical_cad_vision_transformer_chest_xray_20250915_121144/logs/config.json
+[2025-09-15 12:11:44] [INFO] Using device: cpu
+[2025-09-15 12:11:44] [INFO] Creating chest_xray classification data...
+[2025-09-15 12:11:45] [INFO] Training samples: 0, Validation samples: 0
+[2025-09-15 12:11:45] [INFO] Classes: ['Normal', 'Pneumonia', 'COVID-19']

@@ -1,0 +1,9 @@
+{
+  "algorithm": "Medical Vision Transformer",
+  "dataset_type": "chest_xray",
+  "batch_size": 16,
+  "image_size": 224,
+  "learning_rate": 0.0001,
+  "num_classes": 3,
+  "num_epochs": 30
+}

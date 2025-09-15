@@ -1,0 +1,12 @@
+[2025-09-15 12:20:22] [INFO] Experiment started: clinical_ai_decision_support_cardiology
+[2025-09-15 12:20:22] [INFO] Results will be saved to: results/clinical_ai_decision_support_cardiology_20250915_122022
+[2025-09-15 12:20:22] [INFO] Using device: cpu
+[2025-09-15 12:20:25] [INFO] Starting clinical decision support training...
+[2025-09-15 12:20:25] [INFO] Epoch [1/5], Step [0/80], Loss: 1.6806
+[2025-09-15 12:20:29] [INFO] Epoch [1/5], Step [20/80], Loss: 1.1732
+[2025-09-15 12:20:32] [INFO] Epoch [1/5], Step [40/80], Loss: 1.6714
+[2025-09-15 12:20:36] [INFO] Epoch [1/5], Step [60/80], Loss: 1.6001
+[2025-09-15 12:20:40] [INFO] Epoch [1/5]
+[2025-09-15 12:20:40] [INFO] Train Loss: 1.4967
+[2025-09-15 12:20:40] [INFO] Val Loss: 1.6211
+[2025-09-15 12:20:40] [INFO] Diagnosis Accuracy: 0.4250

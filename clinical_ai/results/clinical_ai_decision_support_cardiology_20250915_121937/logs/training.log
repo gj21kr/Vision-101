@@ -1,0 +1,4 @@
+[2025-09-15 12:19:38] [INFO] Experiment started: clinical_ai_decision_support_cardiology
+[2025-09-15 12:19:38] [INFO] Results will be saved to: results/clinical_ai_decision_support_cardiology_20250915_121937
+[2025-09-15 12:19:38] [INFO] Using device: cpu
+[2025-09-15 12:19:41] [INFO] Starting clinical decision support training...
