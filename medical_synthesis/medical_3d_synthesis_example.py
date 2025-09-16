@@ -31,7 +31,6 @@ import os
 import sys
 import math
 import json
-from datetime import datetime
 from typing import Dict, List, Tuple, Optional, Union
 from dataclasses import dataclass
 from enum import Enum
@@ -39,28 +38,7 @@ import scipy.ndimage
 
 # Add Vision-101 to path
 sys.path.append('/workspace/Vision-101')
-try:
-    from result_logger import create_logger_for_medical_synthesis
-except ImportError:
-    # Fallback logger if result_logger is not available
-    class SimpleLogger:
-        def __init__(self, name):
-            self.name = name
-            self.start_time = datetime.now()
-
-        def log(self, message):
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            print(f"[{timestamp}] {message}")
-
-        def save_numpy_array(self, array, filename, description=None):
-            # Simple array saving
-            pass
-
-        def log_metrics(self, epoch, train_loss, val_loss=None, **kwargs):
-            self.log(f"Epoch {epoch}: Train Loss = {train_loss:.6f}")
-
-    def create_logger_for_medical_synthesis(algorithm, dataset):
-        return SimpleLogger(f"medical_synthesis_{algorithm}_{dataset}")
+from result_logger import create_logger_for_medical_synthesis
 
 class VolumeType(Enum):
     """3D 볼륨 유형"""
