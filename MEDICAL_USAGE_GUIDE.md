@@ -9,15 +9,17 @@ Vision-101에는 의료 이미지에 특화된 다음 기능들이 구현되어 
 ### 📂 파일 구조
 ```
 Vision-101/
-├── medical_data_utils.py           # 의료 데이터 로더
-├── result_logger.py               # 결과 자동 저장 시스템
-├── run_medical_tests.py           # 통합 테스트 스크립트
-├── generating/
-│   ├── vae_medical_example.py     # 의료 이미지 VAE
-│   └── gan_medical_example.py     # 의료 이미지 GAN
-├── 3d/
-│   └── nerf_medical_example.py    # 의료 볼륨 NeRF
-└── results/                       # 모든 결과가 여기에 저장됨
+├── medical/
+│   ├── medical_data_utils.py         # 의료 데이터 로더
+│   ├── result_logger.py              # 의료 결과 로거
+│   ├── run_medical_tests.py          # 의료 통합 테스트 스크립트
+│   └── ...                           # 의료 영상 관련 모듈
+├── non_medical/
+│   ├── generating/                   # 생성/확산 알고리즘
+│   │   └── *                         # 일반/의료 예제 스크립트
+│   ├── 3d/                           # 3D 비전 예제 (NeRF 등)
+│   └── ...                           # 추적/비주얼랭귀지 등 일반 모듈
+└── results/                          # 모든 실험 결과 저장 디렉터리
 ```
 
 ## 🚀 빠른 시작
@@ -39,32 +41,32 @@ pip install opencv-python
 
 ```bash
 # 모든 알고리즘을 chest X-ray 데이터로 테스트
-python run_medical_tests.py --algorithms all --dataset chest_xray
+python medical/run_medical_tests.py --algorithms all --dataset chest_xray
 
 # 빠른 테스트 (각 알고리즘 5 epochs만)
-python run_medical_tests.py --algorithms all --dataset chest_xray --quick-test
+python medical/run_medical_tests.py --algorithms all --dataset chest_xray --quick-test
 
 # 특정 알고리즘만 실행
-python run_medical_tests.py --algorithms vae gan --dataset brain_mri
+python medical/run_medical_tests.py --algorithms vae gan --dataset brain_mri
 ```
 
 ### 3. 개별 알고리즘 실행
 
 #### VAE (Variational Autoencoder)
 ```bash
-cd generating
+cd non_medical/generating
 python vae_medical_example.py
 ```
 
 #### GAN (Generative Adversarial Network)
 ```bash
-cd generating
+cd non_medical/generating
 python gan_medical_example.py
 ```
 
 #### NeRF (Neural Radiance Fields)
 ```bash
-cd 3d
+cd non_medical/3d
 python nerf_medical_example.py
 ```
 
@@ -77,7 +79,7 @@ python nerf_medical_example.py
 - **예시 데이터셋**: ChestX-ray14, Montgomery County
 
 ```python
-from medical_data_utils import load_chest_xray_data
+from medical.medical_data_utils import load_chest_xray_data
 
 # 합성 데이터 생성
 images = load_chest_xray_data(num_samples=1000, image_size=256)
@@ -93,7 +95,7 @@ images = load_chest_xray_data('/path/to/chest_xray_data', num_samples=1000)
 - **예시 데이터셋**: BraTS, ADNI
 
 ```python
-from medical_data_utils import load_brain_mri_data
+from medical.medical_data_utils import load_brain_mri_data
 
 images = load_brain_mri_data(num_samples=1000, image_size=256)
 ```
@@ -105,7 +107,7 @@ images = load_brain_mri_data(num_samples=1000, image_size=256)
 - **예시 데이터셋**: ISIC 2020
 
 ```python
-from medical_data_utils import load_skin_lesion_data
+from medical.medical_data_utils import load_skin_lesion_data
 
 images = load_skin_lesion_data(num_samples=1000, image_size=256)
 ```
@@ -114,7 +116,7 @@ images = load_skin_lesion_data(num_samples=1000, image_size=256)
 
 ### DICOM 파일 로드
 ```python
-from medical_data_utils import MedicalImageLoader
+from medical.medical_data_utils import MedicalImageLoader
 
 loader = MedicalImageLoader('custom', image_size=512)
 
