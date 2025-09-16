@@ -15,16 +15,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 from typing import Dict, List, Any, Optional
-import pickle
 
 class ResultLogger:
-    def __init__(self, experiment_name: str, base_dir: str = "results"):
+    def __init__(
+        self,
+        experiment_name: str,
+        base_dir: str = "results",
+        category: Optional[str] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ):
         """
         결과 로거 초기화
 
         Args:
             experiment_name: 실험 이름 (예: 'vae_chest_xray', 'nerf_synthetic')
             base_dir: 결과 저장 기본 디렉토리
+            category: 실험을 구분하기 위한 카테고리 (예: 'medical', 'non_medical')
+            metadata: 로그에 기록할 초기 메타데이터
         """
         self.experiment_name = experiment_name
         self.timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -46,6 +53,7 @@ class ResultLogger:
         # Initialize log file
         self.log_file = os.path.join(self.dirs['logs'], 'training.log')
         self.metrics_file = os.path.join(self.dirs['metrics'], 'metrics.json')
+        self.metadata_file = os.path.join(self.dirs['logs'], 'metadata.json')
 
         # Initialize metrics storage
         self.metrics = {
@@ -55,9 +63,15 @@ class ResultLogger:
             'timestamps': [],
             'custom_metrics': {}
         }
+        self.metadata: Dict[str, Any] = {}
 
         self.log(f"Experiment started: {experiment_name}")
         self.log(f"Results will be saved to: {self.experiment_dir}")
+
+        if category:
+            self.add_metadata(category=category)
+        if metadata:
+            self.add_metadata(**metadata)
 
     def log(self, message: str, level: str = "INFO"):
         """
@@ -76,6 +90,24 @@ class ResultLogger:
         # Write to file
         with open(self.log_file, 'a', encoding='utf-8') as f:
             f.write(log_message + '\n')
+
+    def add_metadata(self, **metadata: Any):
+        """
+        추가 메타데이터를 기록합니다.
+
+        Args:
+            **metadata: 기록할 키워드 메타데이터
+        """
+        cleaned_metadata = {k: v for k, v in metadata.items() if v is not None}
+        if not cleaned_metadata:
+            return
+
+        self.metadata.update(cleaned_metadata)
+
+        with open(self.metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(self.metadata, f, indent=2, ensure_ascii=False)
+
+        self.log(f"Metadata updated: {cleaned_metadata}")
 
     def save_image(self, image_array: np.ndarray, filename: str, title: str = None, cmap: str = 'gray'):
         """
@@ -377,7 +409,9 @@ class ResultLogger:
             'total_epochs': len(self.metrics['epochs']),
             'final_train_loss': self.metrics['training_losses'][-1] if self.metrics['training_losses'] else None,
             'best_train_loss': min(self.metrics['training_losses']) if self.metrics['training_losses'] else None,
-            'results_directory': self.experiment_dir
+            'results_directory': self.experiment_dir,
+            'category': self.metadata.get('category'),
+            'metadata': self.metadata,
         }
 
         summary_file = os.path.join(self.dirs['base'], 'experiment_summary.json')
@@ -389,80 +423,358 @@ class ResultLogger:
 
         return self.experiment_dir
 
+# Specialized subclasses ----------------------------------------------------
+
+class MedicalResultLogger(ResultLogger):
+    """Result logger with defaults tailored for medical experiments."""
+
+    def __init__(
+        self,
+        experiment_name: str,
+        base_dir: str = "results/medical",
+        specialty: Optional[str] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ):
+        combined_metadata = dict(metadata or {})
+        if specialty and "specialty" not in combined_metadata:
+            combined_metadata["specialty"] = specialty
+
+        super().__init__(
+            experiment_name,
+            base_dir=base_dir,
+            category="medical",
+            metadata=combined_metadata,
+        )
+
+        self.specialty = specialty
+
+        if specialty:
+            self.log(f"Medical specialty set to: {specialty}")
+
+
+class NonMedicalResultLogger(ResultLogger):
+    """Result logger variant for non-medical experiments."""
+
+    def __init__(
+        self,
+        experiment_name: str,
+        base_dir: str = "results/non_medical",
+        domain: Optional[str] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ):
+        combined_metadata = dict(metadata or {})
+        if domain and "domain" not in combined_metadata:
+            combined_metadata["domain"] = domain
+
+        super().__init__(
+            experiment_name,
+            base_dir=base_dir,
+            category="non_medical",
+            metadata=combined_metadata,
+        )
+
+        self.domain = domain
+
+        if domain:
+            self.log(f"Non-medical domain set to: {domain}")
+
 # Convenience functions for different algorithm types
-def create_logger_for_generating(algorithm_name: str, dataset_type: str = ""):
+def create_logger_for_generating(
+    algorithm_name: str,
+    dataset_type: str = "",
+    medical: bool = True,
+    specialty: Optional[str] = None,
+    domain: Optional[str] = None,
+    base_dir: Optional[str] = None,
+):
     """Generating 알고리즘용 로거 생성"""
     exp_name = f"generating_{algorithm_name}"
     if dataset_type:
         exp_name += f"_{dataset_type}"
-    return ResultLogger(exp_name)
 
-def create_logger_for_medical_segmentation(algorithm_name, dataset_type):
+    experiment_metadata: Dict[str, Any] = {}
+    if dataset_type:
+        experiment_metadata['dataset_type'] = dataset_type
+
+    if medical:
+        target_base_dir = base_dir or "results/medical"
+        return MedicalResultLogger(
+            exp_name,
+            base_dir=target_base_dir,
+            specialty=specialty,
+            metadata=experiment_metadata or None,
+        )
+
+    target_base_dir = base_dir or "results/non_medical"
+    return NonMedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        domain=domain,
+        metadata=experiment_metadata or None,
+    )
+
+def create_logger_for_medical_segmentation(
+    algorithm_name: str,
+    dataset_type: str,
+    specialty: Optional[str] = None,
+    base_dir: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> MedicalResultLogger:
     """Create a logger for medical segmentation algorithms"""
     exp_name = f"medical_segmentation_{algorithm_name}_{dataset_type}"
-    return ResultLogger(exp_name)
+    target_base_dir = base_dir or "results/medical"
+    return MedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        specialty=specialty,
+        metadata=metadata,
+    )
 
-def create_logger_for_medical_detection(algorithm_name, dataset_type):
+
+def create_logger_for_medical_detection(
+    algorithm_name: str,
+    dataset_type: str,
+    specialty: Optional[str] = None,
+    base_dir: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> MedicalResultLogger:
     """Create a logger for medical detection algorithms"""
     exp_name = f"medical_detection_{algorithm_name}_{dataset_type}"
-    return ResultLogger(exp_name)
+    target_base_dir = base_dir or "results/medical"
+    return MedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        specialty=specialty,
+        metadata=metadata,
+    )
 
-def create_logger_for_medical_registration(algorithm_name, dataset_type):
+
+def create_logger_for_medical_registration(
+    algorithm_name: str,
+    dataset_type: str,
+    specialty: Optional[str] = None,
+    base_dir: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> MedicalResultLogger:
     """Create a logger for medical registration algorithms"""
     exp_name = f"medical_registration_{algorithm_name}_{dataset_type}"
-    return ResultLogger(exp_name)
+    target_base_dir = base_dir or "results/medical"
+    return MedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        specialty=specialty,
+        metadata=metadata,
+    )
 
-def create_logger_for_medical_enhancement(algorithm_name, dataset_type):
+
+def create_logger_for_medical_enhancement(
+    algorithm_name: str,
+    dataset_type: str,
+    specialty: Optional[str] = None,
+    base_dir: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> MedicalResultLogger:
     """Create a logger for medical enhancement algorithms"""
     exp_name = f"medical_enhancement_{algorithm_name}_{dataset_type}"
-    return ResultLogger(exp_name)
+    target_base_dir = base_dir or "results/medical"
+    return MedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        specialty=specialty,
+        metadata=metadata,
+    )
 
-def create_logger_for_medical_cad(algorithm_name, dataset_type):
+
+def create_logger_for_medical_cad(
+    algorithm_name: str,
+    dataset_type: str,
+    specialty: Optional[str] = None,
+    base_dir: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> MedicalResultLogger:
     """Create a logger for computer-aided diagnosis algorithms"""
     exp_name = f"medical_cad_{algorithm_name}_{dataset_type}"
-    return ResultLogger(exp_name)
+    target_base_dir = base_dir or "results/medical"
+    return MedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        specialty=specialty,
+        metadata=metadata,
+    )
 
-def create_logger_for_medical_3d(algorithm_name, dataset_type):
+
+def create_logger_for_medical_3d(
+    algorithm_name: str,
+    dataset_type: str,
+    specialty: Optional[str] = None,
+    base_dir: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> MedicalResultLogger:
     """Create a logger for 3D medical imaging algorithms"""
     exp_name = f"medical_3d_{algorithm_name}_{dataset_type}"
-    return ResultLogger(exp_name)
+    target_base_dir = base_dir or "results/medical"
+    return MedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        specialty=specialty,
+        metadata=metadata,
+    )
 
-def create_logger_for_specialized_modalities(algorithm_name, dataset_type):
+
+def create_logger_for_specialized_modalities(
+    algorithm_name: str,
+    dataset_type: str,
+    modality: Optional[str] = None,
+    base_dir: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> MedicalResultLogger:
     """Create a logger for specialized medical modality algorithms"""
     exp_name = f"specialized_modalities_{algorithm_name}_{dataset_type}"
-    return ResultLogger(exp_name)
+    target_base_dir = base_dir or "results/medical"
+    combined_metadata = dict(metadata or {})
+    if modality and "modality" not in combined_metadata:
+        combined_metadata["modality"] = modality
+    return MedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        metadata=combined_metadata,
+    )
 
-def create_logger_for_medical_modalities(algorithm_name, dataset_type):
+
+def create_logger_for_medical_modalities(
+    algorithm_name: str,
+    dataset_type: str,
+    modality: Optional[str] = None,
+    specialty: Optional[str] = None,
+    base_dir: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> MedicalResultLogger:
     """Create logger for specialized medical modalities"""
     exp_name = f"medical_modalities_{algorithm_name}_{dataset_type}"
-    return ResultLogger(exp_name)
+    target_base_dir = base_dir or "results/medical"
+    combined_metadata = dict(metadata or {})
+    if modality and "modality" not in combined_metadata:
+        combined_metadata["modality"] = modality
+    return MedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        specialty=specialty,
+        metadata=combined_metadata,
+    )
 
-def create_logger_for_medical_synthesis(algorithm_name, dataset_type):
+
+def create_logger_for_medical_synthesis(
+    algorithm_name: str,
+    dataset_type: str,
+    specialty: Optional[str] = None,
+    base_dir: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> MedicalResultLogger:
     """Create a logger for medical image synthesis algorithms"""
     exp_name = f"medical_synthesis_{algorithm_name}_{dataset_type}"
-    return ResultLogger(exp_name)
+    target_base_dir = base_dir or "results/medical"
+    return MedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        specialty=specialty,
+        metadata=metadata,
+    )
 
-def create_logger_for_clinical_ai(algorithm_name, dataset_type):
+
+def create_logger_for_clinical_ai(
+    algorithm_name: str,
+    dataset_type: str,
+    application_area: Optional[str] = None,
+    base_dir: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> MedicalResultLogger:
     """Create logger for clinical AI applications"""
     exp_name = f"clinical_ai_{algorithm_name}_{dataset_type}"
-    return ResultLogger(exp_name)
+    target_base_dir = base_dir or "results/medical"
+    combined_metadata = dict(metadata or {})
+    if application_area and "application_area" not in combined_metadata:
+        combined_metadata["application_area"] = application_area
+    return MedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        metadata=combined_metadata,
+    )
 
-def create_logger_for_multimodal_medical(algorithm_name, dataset_type):
+
+def create_logger_for_multimodal_medical(
+    algorithm_name: str,
+    dataset_type: str,
+    modalities: Optional[List[str]] = None,
+    base_dir: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> MedicalResultLogger:
     """Create a logger for multi-modal medical AI algorithms"""
     exp_name = f"multimodal_medical_{algorithm_name}_{dataset_type}"
-    return ResultLogger(exp_name)
+    target_base_dir = base_dir or "results/medical"
+    combined_metadata = dict(metadata or {})
+    if modalities and "modalities" not in combined_metadata:
+        combined_metadata["modalities"] = modalities
+    return MedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        metadata=combined_metadata,
+    )
 
-def create_logger_for_temporal_medical(algorithm_name, dataset_type):
+
+def create_logger_for_temporal_medical(
+    algorithm_name: str,
+    dataset_type: str,
+    analysis_type: Optional[str] = None,
+    base_dir: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> MedicalResultLogger:
     """Create logger for temporal medical analysis"""
     exp_name = f"temporal_medical_{algorithm_name}_{dataset_type}"
-    return ResultLogger(exp_name)
+    target_base_dir = base_dir or "results/medical"
+    combined_metadata = dict(metadata or {})
+    if analysis_type and "analysis_type" not in combined_metadata:
+        combined_metadata["analysis_type"] = analysis_type
+    return MedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        metadata=combined_metadata,
+    )
 
-def create_logger_for_3d(algorithm_name: str, scene_type: str = ""):
+
+def create_logger_for_3d(
+    algorithm_name: str,
+    scene_type: str = "",
+    medical: bool = True,
+    specialty: Optional[str] = None,
+    domain: Optional[str] = None,
+    base_dir: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+) -> ResultLogger:
     """3D reconstruction 알고리즘용 로거 생성"""
     exp_name = f"3d_{algorithm_name}"
     if scene_type:
         exp_name += f"_{scene_type}"
-    return ResultLogger(exp_name)
+
+    combined_metadata = dict(metadata or {})
+    if scene_type and "scene_type" not in combined_metadata:
+        combined_metadata["scene_type"] = scene_type
+
+    if medical:
+        target_base_dir = base_dir or "results/medical"
+        return MedicalResultLogger(
+            exp_name,
+            base_dir=target_base_dir,
+            specialty=specialty,
+            metadata=combined_metadata,
+        )
+
+    target_base_dir = base_dir or "results/non_medical"
+    return NonMedicalResultLogger(
+        exp_name,
+        base_dir=target_base_dir,
+        domain=domain,
+        metadata=combined_metadata,
+    )
 
 if __name__ == "__main__":
     # Example usage
