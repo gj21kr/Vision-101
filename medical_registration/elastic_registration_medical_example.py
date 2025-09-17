@@ -34,7 +34,7 @@ from scipy.ndimage import map_coordinates
 from sklearn.metrics import mutual_info_score
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from result_logger import create_logger_for_medical_registration
+from medical.result_logger import create_logger_for_medical_registration
 
 class BSplineTransformation(nn.Module):
     """B-spline based transformation for elastic registration"""

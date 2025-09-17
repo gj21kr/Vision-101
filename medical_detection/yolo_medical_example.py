@@ -40,8 +40,8 @@ from collections import defaultdict
 
 # Add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from medical_data_utils import MedicalImageLoader
-from result_logger import create_logger_for_medical_detection
+from medical.medical_data_utils import MedicalImageLoader
+from medical.result_logger import create_logger_for_medical_detection
 
 class ConvBlock(nn.Module):
     """Convolutional block with BatchNorm and LeakyReLU"""

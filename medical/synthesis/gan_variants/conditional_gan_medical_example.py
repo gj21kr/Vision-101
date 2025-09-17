@@ -33,12 +33,13 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Dataset
 import numpy as np
 import os
-import sys
 
-# Add parent directory to path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from medical_data_utils import MedicalImageLoader, load_chest_xray_data, load_brain_mri_data
-from result_logger import create_logger_for_generating
+from ...medical_data_utils import (
+    MedicalImageLoader,
+    load_chest_xray_data,
+    load_brain_mri_data,
+)
+from ...result_logger import create_logger_for_generating
 
 class ConditionalGenerator(nn.Module):
     """조건부 Generator: 노이즈 + 클래스 조건으로 이미지 생성"""

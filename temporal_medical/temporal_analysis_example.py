@@ -26,7 +26,7 @@ import os
 import sys
 from sklearn.metrics import mean_squared_error, r2_score
 sys.path.append('/workspace/Vision-101')
-from result_logger import create_logger_for_temporal_medical
+from medical.result_logger import create_logger_for_temporal_medical
 
 class TemporalMedicalDataset(Dataset):
     def __init__(self, data_type='cardiac_monitoring', sequence_length=10, transform=None):

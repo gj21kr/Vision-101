@@ -28,7 +28,7 @@ import json
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score, classification_report
 sys.path.append('/workspace/Vision-101')
-from result_logger import create_logger_for_clinical_ai
+from medical.result_logger import create_logger_for_clinical_ai
 
 class ClinicalDataset(Dataset):
     def __init__(self, data_type='cardiology', transform=None):

@@ -36,7 +36,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from skimage import measure
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from result_logger import create_logger_for_medical_3d
+from medical.result_logger import create_logger_for_medical_3d
 
 class Conv3DBlock(nn.Module):
     """3D Convolution block with batch norm and activation"""

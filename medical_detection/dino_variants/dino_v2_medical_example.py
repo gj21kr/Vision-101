@@ -25,7 +25,7 @@ import os
 import sys
 import math
 sys.path.append('/workspace/Vision-101')
-from result_logger import create_logger_for_medical_detection
+from medical.result_logger import create_logger_for_medical_detection
 
 # DINO-V2용 의료 데이터셋 (기존과 동일하지만 더 큰 해상도 지원)
 class MedicalDinoV2Dataset(Dataset):

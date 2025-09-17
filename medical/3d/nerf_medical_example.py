@@ -16,14 +16,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 import os
-import sys
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-# Add parent directory to path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from medical_data_utils import MedicalImageLoader
-from result_logger import create_logger_for_3d
+from ..medical_data_utils import MedicalImageLoader
+from ..result_logger import create_logger_for_3d
 
 class PositionalEncoder(nn.Module):
     def __init__(self, d_input=3, n_freqs=10, log_space=False):

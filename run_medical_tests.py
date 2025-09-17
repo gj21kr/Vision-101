@@ -21,18 +21,21 @@ import subprocess
 import argparse
 from datetime import datetime
 
-def run_algorithm(script_path, algorithm_name, timeout=3600):
+def run_algorithm(module_path, algorithm_name, base_dir, timeout=3600):
     """
     개별 알고리즘 실행
 
     Args:
-        script_path: 실행할 스크립트 경로
+        module_path: 실행할 모듈 경로
         algorithm_name: 알고리즘 이름 (로깅용)
+        base_dir: 프로젝트 루트 경로
         timeout: 최대 실행 시간 (초)
 
     Returns:
-        bool: 성공 여부
+        tuple: (성공 여부, 스크립트 경로)
     """
+    script_path = os.path.join(base_dir, *module_path.split('.')) + '.py'
+
     print(f"\n{'='*60}")
     print(f"Running {algorithm_name}")
     print(f"Script: {script_path}")
@@ -43,17 +46,17 @@ def run_algorithm(script_path, algorithm_name, timeout=3600):
         # Check if script exists
         if not os.path.exists(script_path):
             print(f"ERROR: Script not found: {script_path}")
-            return False
+            return False, script_path
 
         # Run the script
         start_time = time.time()
 
         result = subprocess.run(
-            [sys.executable, script_path],
+            [sys.executable, '-m', module_path],
             timeout=timeout,
             capture_output=True,
             text=True,
-            cwd=os.path.dirname(script_path)
+            cwd=base_dir
         )
 
         end_time = time.time()
@@ -69,16 +72,16 @@ def run_algorithm(script_path, algorithm_name, timeout=3600):
             print(f"❌ {algorithm_name} failed with return code: {result.returncode}")
             print("\nError output:")
             print(result.stderr[-1000:])
-            return False
+            return False, script_path
 
     except subprocess.TimeoutExpired:
         print(f"⏰ {algorithm_name} timed out after {timeout} seconds")
-        return False
+        return False, script_path
     except Exception as e:
         print(f"💥 {algorithm_name} crashed with error: {e}")
-        return False
+        return False, script_path
 
-    return True
+    return True, script_path
 
 def main():
     parser = argparse.ArgumentParser(description="Run medical image algorithm tests")
@@ -108,63 +111,63 @@ def main():
     algorithms = {
         # Core algorithms
         'vae': {
-            'script': os.path.join(base_dir, 'generating', 'vae_medical_example.py'),
+            'module': 'medical.synthesis.vae_medical_example',
             'name': 'Medical VAE'
         },
         'gan': {
-            'script': os.path.join(base_dir, 'generating', 'gan_medical_example.py'),
+            'module': 'medical.synthesis.gan_medical_example',
             'name': 'Medical GAN'
         },
         'nerf': {
-            'script': os.path.join(base_dir, '3d', 'nerf_medical_example.py'),
+            'module': 'medical.3d.nerf_medical_example',
             'name': 'Medical NeRF'
         },
 
         # GAN Variants
         'dcgan': {
-            'script': os.path.join(base_dir, 'generating', 'gan_variants', 'dcgan_medical_example.py'),
+            'module': 'medical.synthesis.gan_variants.dcgan_medical_example',
             'name': 'Medical DCGAN'
         },
         'wgan': {
-            'script': os.path.join(base_dir, 'generating', 'gan_variants', 'wgan_medical_example.py'),
+            'module': 'medical.synthesis.gan_variants.wgan_medical_example',
             'name': 'Medical WGAN'
         },
         'wgan_gp': {
-            'script': os.path.join(base_dir, 'generating', 'gan_variants', 'wgan_gp_medical_example.py'),
+            'module': 'medical.synthesis.gan_variants.wgan_gp_medical_example',
             'name': 'Medical WGAN-GP'
         },
         'stylegan': {
-            'script': os.path.join(base_dir, 'generating', 'gan_variants', 'stylegan_medical_example.py'),
+            'module': 'medical.synthesis.gan_variants.stylegan_medical_example',
             'name': 'Medical StyleGAN'
         },
         'cyclegan': {
-            'script': os.path.join(base_dir, 'generating', 'gan_variants', 'cyclegan_medical_example.py'),
+            'module': 'medical.synthesis.gan_variants.cyclegan_medical_example',
             'name': 'Medical CycleGAN'
         },
         'conditional_gan': {
-            'script': os.path.join(base_dir, 'generating', 'gan_variants', 'conditional_gan_medical_example.py'),
+            'module': 'medical.synthesis.gan_variants.conditional_gan_medical_example',
             'name': 'Medical Conditional GAN'
         },
 
         # Diffusion Models
         'ddpm': {
-            'script': os.path.join(base_dir, 'generating', 'diffusion_variants', 'ddpm_medical_example.py'),
+            'module': 'medical.synthesis.diffusion_variants.ddpm_medical_example',
             'name': 'Medical DDPM'
         },
         'ddim': {
-            'script': os.path.join(base_dir, 'generating', 'diffusion_variants', 'ddim_medical_example.py'),
+            'module': 'medical.synthesis.diffusion_variants.ddim_medical_example',
             'name': 'Medical DDIM'
         },
         'latent_diffusion': {
-            'script': os.path.join(base_dir, 'generating', 'diffusion_variants', 'latent_diffusion_medical_example.py'),
+            'module': 'medical.synthesis.diffusion_variants.latent_diffusion_medical_example',
             'name': 'Medical Latent Diffusion'
         },
         'score_based_sde': {
-            'script': os.path.join(base_dir, 'generating', 'diffusion_variants', 'score_based_diffusion_medical_example.py'),
+            'module': 'medical.synthesis.diffusion_variants.score_based_diffusion_medical_example',
             'name': 'Medical Score-based SDE'
         },
         'conditional_diffusion': {
-            'script': os.path.join(base_dir, 'generating', 'diffusion_variants', 'conditional_diffusion_medical_example.py'),
+            'module': 'medical.synthesis.diffusion_variants.conditional_diffusion_medical_example',
             'name': 'Medical Conditional Diffusion'
         }
     }
@@ -230,9 +233,10 @@ def main():
         algo_info = algorithms[algo_key]
 
         start_time = time.time()
-        success = run_algorithm(
-            algo_info['script'],
+        success, script_path = run_algorithm(
+            algo_info['module'],
             algo_info['name'],
+            base_dir,
             args.timeout
         )
         end_time = time.time()
@@ -241,7 +245,8 @@ def main():
             'name': algo_info['name'],
             'success': success,
             'execution_time': end_time - start_time,
-            'script_path': algo_info['script']
+            'module': algo_info['module'],
+            'script_path': script_path
         }
 
         # Brief pause between algorithms
@@ -270,6 +275,7 @@ def main():
         print(f"\n{result['name']}: {status}")
         print(f"  Execution time: {execution_time:.2f} seconds")
         print(f"  Script: {result['script_path']}")
+        print(f"  Module: {result['module']}")
 
         if result['success']:
             successful_algorithms.append(result['name'])
@@ -312,7 +318,8 @@ def main():
             status = "PASSED" if result['success'] else "FAILED"
             f.write(f"{result['name']}: {status}\n")
             f.write(f"  Execution time: {result['execution_time']:.2f}s\n")
-            f.write(f"  Script: {result['script_path']}\n\n")
+            f.write(f"  Script: {result['script_path']}\n")
+            f.write(f"  Module: {result['module']}\n\n")
 
     print(f"\n📄 Test summary saved to: {summary_file}")
 

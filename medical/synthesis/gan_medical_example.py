@@ -18,14 +18,15 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 import numpy as np
 import os
-import sys
 import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
 
-# Add parent directory to path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from medical_data_utils import MedicalImageLoader, load_chest_xray_data, load_brain_mri_data
-from result_logger import create_logger_for_generating
+from ..medical_data_utils import (
+    MedicalImageLoader,
+    load_chest_xray_data,
+    load_brain_mri_data,
+)
+from ..result_logger import create_logger_for_generating
 
 class MedicalGenerator(nn.Module):
     def __init__(self, noise_dim=100, img_channels=1, img_size=64):

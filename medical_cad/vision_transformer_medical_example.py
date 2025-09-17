@@ -37,7 +37,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 import seaborn as sns
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from result_logger import create_logger_for_medical_cad
+from medical.result_logger import create_logger_for_medical_cad
 
 class PatchEmbedding(nn.Module):
     """Patch embedding for medical images"""

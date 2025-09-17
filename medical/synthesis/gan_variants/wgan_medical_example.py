@@ -1,51 +1,46 @@
 """
-Medical WGAN-GP (Wasserstein GAN with Gradient Penalty) Implementation
+Medical WGAN (Wasserstein GAN) Implementation
 
-의료 이미지 생성을 위한 WGAN-GP 구현입니다.
-WGAN-GP는 기존 WGAN의 weight clipping 문제를 gradient penalty로 해결하여
-더 안정적이고 고품질의 훈련을 제공합니다.
+의료 이미지 생성을 위한 WGAN 구현으로, Wasserstein distance를 사용하여
+전통적인 GAN의 훈련 불안정성 문제를 해결합니다.
 
 의료 특화 기능:
 - 의료 이미지 특화 데이터 로더 (chest X-ray, brain MRI, skin lesion)
 - 자동 결과 저장 및 로깅 시스템
-- Gradient penalty 및 Wasserstein distance 추적
+- Wasserstein distance 추적 및 시각화
 - 의료 이미지 품질 평가 메트릭
 
-WGAN-GP의 핵심 개선사항:
-1. Gradient Penalty: weight clipping을 대체
-2. 1-Lipschitz 제약을 더 부드럽게 강제
-3. Adam optimizer 사용 가능 (RMSprop 대신)
-4. 더 안정적인 훈련과 고품질 결과
-
-수학적 정의:
-- GP Loss: λ * E[(||∇D(x̃)||₂ - 1)²]
-- 여기서 x̃는 real과 fake 사이의 랜덤 interpolation
-- λ는 gradient penalty 가중치 (보통 10)
+WGAN의 핵심 개선사항:
+1. Wasserstein Distance 사용 (Earth Mover's distance)
+2. Critic Network (확률이 아닌 실수값 스코어 출력)
+3. 1-Lipschitz 제약 조건 (Weight clipping)
+4. RMSprop optimizer 사용
+5. 더 안정적인 훈련과 의미있는 손실 함수 값
 
 Reference:
-- Gulrajani, I., Ahmed, F., Arjovsky, M., Dumoulin, V., & Courville, A. (2017).
-  "Improved training of Wasserstein GANs."
+- Arjovsky, M., Chintala, S., & Bottou, L. (2017).
+  "Wasserstein generative adversarial networks."
 """
 
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import torch.autograd as autograd
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Dataset
 import numpy as np
 import os
-import sys
 import matplotlib.pyplot as plt
 
-# Add parent directory to path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from medical_data_utils import MedicalImageLoader, load_chest_xray_data, load_brain_mri_data
-from result_logger import create_logger_for_generating
+from ...medical_data_utils import (
+    MedicalImageLoader,
+    load_chest_xray_data,
+    load_brain_mri_data,
+)
+from ...result_logger import create_logger_for_generating
 
-class WGANGPGenerator(nn.Module):
+class WGANGenerator(nn.Module):
     def __init__(self, nz=100, ngf=64, nc=1):
-        super(WGANGPGenerator, self).__init__()
+        super(WGANGenerator, self).__init__()
         self.main = nn.Sequential(
             # input is Z, going into a convolution
             nn.ConvTranspose2d(nz, ngf * 8, 4, 1, 0, bias=False),
@@ -72,17 +67,17 @@ class WGANGPGenerator(nn.Module):
     def forward(self, input):
         return self.main(input)
 
-class WGANGPCritic(nn.Module):
+class WGANCritic(nn.Module):
     """
-    WGAN-GP Critic: Gradient penalty를 위한 개선된 설계
+    WGAN Critic: 확률 대신 실수 점수 출력
 
     핵심 특징:
-    - BatchNorm 제거 (gradient penalty와 충돌 방지)
-    - Sigmoid 활성화 함수 없음
-    - 실수값 스코어 출력
+    - Sigmoid 활성화 함수 없음 (핵심 차이점)
+    - 1-Lipschitz 제약 조건을 위한 weight clipping
+    - Wasserstein distance 근사를 위한 설계
     """
     def __init__(self, nc=1, ndf=64):
-        super(WGANGPCritic, self).__init__()
+        super(WGANCritic, self).__init__()
         self.main = nn.Sequential(
             # input is (nc) x 64 x 64
             nn.Conv2d(nc, ndf, 4, 2, 1, bias=False),
@@ -98,7 +93,7 @@ class WGANGPCritic(nn.Module):
             nn.LeakyReLU(0.2, inplace=True),
             # state size. (ndf*8) x 4 x 4
             nn.Conv2d(ndf * 8, 1, 4, 1, 0, bias=False),
-            # No activation (실수값 출력)
+            # No sigmoid! 이것이 DCGAN과의 핵심 차이점
         )
 
     def forward(self, input):
@@ -110,6 +105,7 @@ class MedicalImageDataset(Dataset):
         self.image_size = image_size
         self.channels = channels
 
+        # WGAN을 위한 정규화 [-1, 1]
         self.transform = transforms.Compose([
             transforms.ToPILImage(),
             transforms.Resize((image_size, image_size)),
@@ -123,6 +119,7 @@ class MedicalImageDataset(Dataset):
     def __getitem__(self, idx):
         image = self.images[idx]
 
+        # Ensure proper format
         if len(image.shape) == 2:  # Grayscale
             image = np.expand_dims(image, axis=-1)
         elif len(image.shape) == 3 and self.channels == 1:
@@ -143,58 +140,28 @@ def weights_init(m):
         nn.init.normal_(m.weight.data, 1.0, 0.02)
         nn.init.constant_(m.bias.data, 0)
 
-def compute_gradient_penalty(critic, real_samples, fake_samples, device):
+def clip_weights(net, clip_value=0.01):
     """
-    WGAN-GP의 핵심: Gradient Penalty 계산
+    Weight Clipping: 1-Lipschitz 제약 조건 강제
 
-    수학적 배경:
-    - 1-Lipschitz 제약: ||∇f||₂ ≤ 1 for all x
-    - Gradient penalty: λ * E[(||∇f(x̃)||₂ - 1)²]
-    - x̃ = ε*x_real + (1-ε)*x_fake, ε ~ U(0,1)
-
-    장점:
-    - Weight clipping의 문제점 해결
-    - 더 부드러운 제약 조건 강제
-    - 네트워크 용량 제한 없음
+    WGAN의 핵심 아이디어:
+    - Critic이 1-Lipschitz 함수여야 Wasserstein distance 근사 가능
+    - Weight clipping으로 이를 근사적으로 달성
 
     Args:
-        critic: Critic 네트워크
-        real_samples: 실제 데이터 샘플
-        fake_samples: 생성된 데이터 샘플
-        device: 계산 장치
-
-    Returns:
-        gradient_penalty: 계산된 gradient penalty 값
+        net: Critic 네트워크
+        clip_value: 클리핑 범위 [-c, c]
     """
-    batch_size = real_samples.size(0)
-
-    # 랜덤 가중치로 실제와 가짜 샘플 사이 보간점 생성
-    alpha = torch.rand(batch_size, 1, 1, 1, device=device)
-
-    # 보간점 계산: x̃ = α*x_real + (1-α)*x_fake
-    interpolates = (alpha * real_samples + (1 - alpha) * fake_samples).requires_grad_(True)
-
-    # 보간점에 대한 Critic 스코어
-    critic_interpolates = critic(interpolates)
-
-    # 보간점에 대한 gradient 계산
-    gradients = autograd.grad(
-        outputs=critic_interpolates,
-        inputs=interpolates,
-        grad_outputs=torch.ones(critic_interpolates.size(), device=device),
-        create_graph=True,      # 2차 미분을 위해 필요
-        retain_graph=True,      # 메모리 효율성
-        only_inputs=True        # 입력에 대한 gradient만 필요
-    )[0]
-
-    # Gradient의 L2 norm 계산
-    gradients = gradients.view(gradients.size(0), -1)
-    gradient_penalty = ((gradients.norm(2, dim=1) - 1) ** 2).mean()
-
-    return gradient_penalty
+    for param in net.parameters():
+        param.data.clamp_(-clip_value, clip_value)
 
 def calculate_wasserstein_distance(critic, real_data, fake_data):
-    """Wasserstein distance 근사 계산"""
+    """
+    Wasserstein Distance 근사 계산
+
+    수식: W(P_r, P_g) ≈ E[C(x_real)] - E[C(x_fake)]
+    여기서 C는 1-Lipschitz Critic
+    """
     with torch.no_grad():
         real_score = torch.mean(critic(real_data))
         fake_score = torch.mean(critic(fake_data))
@@ -208,9 +175,9 @@ def calculate_quality_score(images):
     variance = np.var(images_np)
     return float(variance)
 
-def train_medical_wgan_gp(dataset_type='chest_xray', data_path=None, num_epochs=100, save_interval=10):
+def train_medical_wgan(dataset_type='chest_xray', data_path=None, num_epochs=100, save_interval=10):
     """
-    Medical WGAN-GP 훈련 함수
+    Medical Image WGAN 훈련 함수
 
     Args:
         dataset_type: 의료 이미지 종류
@@ -219,28 +186,26 @@ def train_medical_wgan_gp(dataset_type='chest_xray', data_path=None, num_epochs=
         save_interval: 중간 결과 저장 간격
     """
     # Create result logger
-    logger = create_logger_for_generating("wgan_gp", dataset_type)
+    logger = create_logger_for_generating("wgan", dataset_type)
 
     # Quick test mode
     if os.getenv('QUICK_TEST'):
         num_epochs = int(os.getenv('TEST_EPOCHS', 5))
         logger.log(f"Quick test mode: training for {num_epochs} epochs only")
 
-    # WGAN-GP Hyperparameters
+    # WGAN Hyperparameters
     batch_size = 64
     image_size = 64
     nz = 100
     ngf = 64
     ndf = 64
-    lr = 0.0001           # WGAN-GP는 더 높은 학습률 가능
-    beta1 = 0.0           # WGAN-GP Adam 파라미터
-    beta2 = 0.9
-    n_critic = 5          # Critic 업데이트 횟수
-    lambda_gp = 10        # Gradient penalty 가중치
+    lr = 0.00005  # WGAN에서는 낮은 학습률 사용
+    n_critic = 5  # Generator 1번 업데이트당 Critic 5번 업데이트
+    clip_value = 0.01  # Weight clipping 값
 
     # Save configuration
     config = {
-        'algorithm': 'WGAN_GP',
+        'algorithm': 'WGAN',
         'dataset_type': dataset_type,
         'batch_size': batch_size,
         'image_size': image_size,
@@ -248,10 +213,8 @@ def train_medical_wgan_gp(dataset_type='chest_xray', data_path=None, num_epochs=
         'ngf': ngf,
         'ndf': ndf,
         'lr': lr,
-        'beta1': beta1,
-        'beta2': beta2,
         'n_critic': n_critic,
-        'lambda_gp': lambda_gp,
+        'clip_value': clip_value,
         'num_epochs': num_epochs,
         'data_path': data_path
     }
@@ -290,107 +253,94 @@ def train_medical_wgan_gp(dataset_type='chest_xray', data_path=None, num_epochs=
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
     # Create networks
-    netG = WGANGPGenerator(nz, ngf, input_channels).to(device)
+    netG = WGANGenerator(nz, ngf, input_channels).to(device)
     netG.apply(weights_init)
 
-    netC = WGANGPCritic(input_channels, ndf).to(device)
+    netC = WGANCritic(input_channels, ndf).to(device)
     netC.apply(weights_init)
 
     logger.log(f"Generator parameters: {sum(p.numel() for p in netG.parameters()):,}")
     logger.log(f"Critic parameters: {sum(p.numel() for p in netC.parameters()):,}")
 
-    # WGAN-GP에서는 Adam 사용 가능
-    optimizerC = optim.Adam(netC.parameters(), lr=lr, betas=(beta1, beta2))
-    optimizerG = optim.Adam(netG.parameters(), lr=lr, betas=(beta1, beta2))
+    # WGAN에서는 RMSprop 사용 (Adam 대신)
+    optimizerC = optim.RMSprop(netC.parameters(), lr=lr)
+    optimizerG = optim.RMSprop(netG.parameters(), lr=lr)
 
     # Fixed noise for visualization
     fixed_noise = torch.randn(64, nz, 1, 1, device=device)
 
     # Training loop
-    logger.log("Starting WGAN-GP training...")
+    logger.log("Starting WGAN training...")
     logger.log(f"Training strategy: {n_critic} critic updates per 1 generator update")
-    logger.log(f"Gradient penalty weight: {lambda_gp}")
 
-    wasserstein_distances = []
-    gradient_penalties = []
+    wasserstein_distances = []  # Track Wasserstein distance over time
 
     for epoch in range(num_epochs):
         epoch_c_loss = 0
         epoch_g_loss = 0
-        epoch_gp = 0
         epoch_wasserstein_d = 0
         num_critic_updates = 0
         num_generator_updates = 0
 
         for i, (data, _) in enumerate(dataloader):
-            # Update Critic multiple times
-            for _ in range(n_critic):
-                netC.zero_grad()
+            # Update Critic
+            netC.zero_grad()
 
-                # Train with real data
-                real_data = data.to(device)
-                b_size = real_data.size(0)
+            # Train critic with real data
+            real_cpu = data.to(device)
+            b_size = real_cpu.size(0)
 
-                # Real data loss
-                critic_real = netC(real_data)
-                loss_real = -torch.mean(critic_real)
+            output_real = netC(real_cpu)
+            errC_real = -torch.mean(output_real)  # Maximize for real
 
-                # Train with fake data
-                noise = torch.randn(b_size, nz, 1, 1, device=device)
-                fake_data = netG(noise)
+            # Train critic with fake data
+            noise = torch.randn(b_size, nz, 1, 1, device=device)
+            fake = netG(noise)
 
-                # Fake data loss
-                critic_fake = netC(fake_data.detach())
-                loss_fake = torch.mean(critic_fake)
+            output_fake = netC(fake.detach())
+            errC_fake = torch.mean(output_fake)  # Minimize for fake
 
-                # Gradient penalty
-                gp = compute_gradient_penalty(netC, real_data, fake_data, device)
+            # Total critic loss (Wasserstein loss)
+            errC = errC_real + errC_fake
+            errC.backward()
+            optimizerC.step()
 
-                # Total critic loss
-                loss_critic = loss_real + loss_fake + lambda_gp * gp
-                loss_critic.backward()
-                optimizerC.step()
+            # Clip critic weights (핵심: 1-Lipschitz 제약 조건)
+            clip_weights(netC, clip_value)
 
-                # Statistics
-                epoch_c_loss += loss_critic.item()
-                epoch_gp += gp.item()
-                num_critic_updates += 1
+            epoch_c_loss += errC.item()
+            num_critic_updates += 1
 
-                # Calculate Wasserstein distance estimate
-                wasserstein_d = -(loss_real.item() + loss_fake.item())
-                epoch_wasserstein_d += wasserstein_d
-                wasserstein_distances.append(wasserstein_d)
-                gradient_penalties.append(gp.item())
-
-                break  # 한 번만 업데이트 (데이터 부족 방지)
-
-            # Update Generator
+            # Update Generator every n_critic iterations
             if i % n_critic == 0:
                 netG.zero_grad()
 
                 # Generate fake data
                 noise = torch.randn(b_size, nz, 1, 1, device=device)
-                fake_data = netG(noise)
+                fake = netG(noise)
 
-                # Generator loss: maximize critic output
-                critic_fake = netC(fake_data)
-                loss_generator = -torch.mean(critic_fake)
-                loss_generator.backward()
+                # Forward pass through critic
+                output = netC(fake)
+                errG = -torch.mean(output)  # Maximize critic output for fake
+                errG.backward()
                 optimizerG.step()
 
-                epoch_g_loss += loss_generator.item()
+                epoch_g_loss += errG.item()
                 num_generator_updates += 1
 
-        # Calculate averages
+                # Calculate Wasserstein distance estimate
+                wasserstein_d = -errC.item()
+                epoch_wasserstein_d += wasserstein_d
+                wasserstein_distances.append(wasserstein_d)
+
+        # Calculate average metrics
         avg_c_loss = epoch_c_loss / num_critic_updates if num_critic_updates > 0 else 0
         avg_g_loss = epoch_g_loss / num_generator_updates if num_generator_updates > 0 else 0
-        avg_gp = epoch_gp / num_critic_updates if num_critic_updates > 0 else 0
-        avg_wasserstein_d = epoch_wasserstein_d / num_critic_updates if num_critic_updates > 0 else 0
+        avg_wasserstein_d = epoch_wasserstein_d / num_generator_updates if num_generator_updates > 0 else 0
 
         # Log metrics
         logger.log_metrics(epoch + 1, avg_g_loss,
                           critic_loss=avg_c_loss,
-                          gradient_penalty=avg_gp,
                           wasserstein_distance=avg_wasserstein_d,
                           critic_updates=num_critic_updates,
                           generator_updates=num_generator_updates)
@@ -403,15 +353,15 @@ def train_medical_wgan_gp(dataset_type='chest_xray', data_path=None, num_epochs=
             with torch.no_grad():
                 fake = netG(fixed_noise)
 
-                # Calculate metrics
+                # Calculate current Wasserstein distance
                 if len(dataloader.dataset) > 0:
-                    sample_real = next(iter(dataloader))[0][:min(32, len(dataloader.dataset))].to(device)
+                    sample_real = next(iter(dataloader))[0][:min(64, len(dataloader.dataset))].to(device)
                     current_wd = calculate_wasserstein_distance(netC, sample_real, fake[:len(sample_real)])
                     logger.log(f"Current Wasserstein Distance: {current_wd.item():.4f}")
 
-                # Convert for saving
+                # Convert to proper format for saving
                 fake_images = fake.detach().cpu()
-                fake_images = (fake_images + 1) / 2
+                fake_images = (fake_images + 1) / 2  # Denormalize from [-1,1] to [0,1]
                 fake_images = torch.clamp(fake_images, 0, 1)
 
                 if input_channels == 1:
@@ -421,7 +371,7 @@ def train_medical_wgan_gp(dataset_type='chest_xray', data_path=None, num_epochs=
                     fake_images = fake_images.permute(0, 2, 3, 1).numpy()
                     fake_images = (fake_images * 255).astype(np.uint8)
 
-                # Quality metrics
+                # Calculate quality metrics
                 quality_score = calculate_quality_score(fake)
                 pixel_mean = torch.mean(fake).item()
                 pixel_std = torch.std(fake).item()
@@ -438,48 +388,35 @@ def train_medical_wgan_gp(dataset_type='chest_xray', data_path=None, num_epochs=
                     cmap='gray' if input_channels == 1 else None
                 )
 
-        # Save model checkpoints
+        # Save model checkpoint
         if (epoch + 1) % (save_interval * 2) == 0:
-            logger.save_model(netG, f"wgan_gp_generator_epoch_{epoch+1:03d}",
+            logger.save_model(netG, f"wgan_generator_epoch_{epoch+1:03d}",
                              optimizer=optimizerG, epoch=epoch+1, config=config)
-            logger.save_model(netC, f"wgan_gp_critic_epoch_{epoch+1:03d}",
+            logger.save_model(netC, f"wgan_critic_epoch_{epoch+1:03d}",
                              optimizer=optimizerC, epoch=epoch+1, config=config)
 
     # Final results
     logger.log("Training completed! Saving final results...")
 
-    # Plot training curves
+    # Plot training curves (including Wasserstein distance)
     logger.plot_training_curves()
 
-    # Plot additional WGAN-GP specific metrics
-    if wasserstein_distances and gradient_penalties:
+    # Plot Wasserstein distance over time
+    if wasserstein_distances:
         import matplotlib.pyplot as plt
-
-        # Wasserstein distance plot
-        plt.figure(figsize=(12, 4))
-
-        plt.subplot(1, 2, 1)
+        plt.figure(figsize=(10, 6))
         plt.plot(wasserstein_distances)
         plt.title('Wasserstein Distance Over Training')
         plt.xlabel('Iteration')
         plt.ylabel('Wasserstein Distance')
         plt.grid(True)
-
-        plt.subplot(1, 2, 2)
-        plt.plot(gradient_penalties)
-        plt.title('Gradient Penalty Over Training')
-        plt.xlabel('Iteration')
-        plt.ylabel('Gradient Penalty')
-        plt.grid(True)
-
-        plt.tight_layout()
-        plt.savefig(os.path.join(logger.dirs['plots'], 'wgan_gp_metrics.png'), dpi=150, bbox_inches='tight')
+        plt.savefig(os.path.join(logger.dirs['plots'], 'wasserstein_distance_curve.png'), dpi=150, bbox_inches='tight')
         plt.close()
 
     # Save final models
-    logger.save_model(netG, "wgan_gp_generator_final", optimizer=optimizerG,
+    logger.save_model(netG, "wgan_generator_final", optimizer=optimizerG,
                      epoch=num_epochs, config=config)
-    logger.save_model(netC, "wgan_gp_critic_final", optimizer=optimizerC,
+    logger.save_model(netC, "wgan_critic_final", optimizer=optimizerC,
                      epoch=num_epochs, config=config)
 
     # Final sample generation
@@ -511,24 +448,24 @@ def train_medical_wgan_gp(dataset_type='chest_xray', data_path=None, num_epochs=
     return netG, netC, results_dir
 
 if __name__ == "__main__":
-    print("Medical WGAN-GP Implementation")
-    print("==============================")
+    print("Medical WGAN Implementation")
+    print("===========================")
 
     # Configuration
     dataset_types = ['chest_xray', 'brain_mri', 'skin_lesion']
     selected_dataset = 'chest_xray'
 
-    print(f"Training WGAN-GP on {selected_dataset} images...")
-    print("WGAN-GP Key Features:")
-    print("- Gradient penalty instead of weight clipping")
-    print("- More stable training than original WGAN")
-    print("- Adam optimizer compatible")
-    print("- Better gradient flow and higher quality results")
-    print("- 1-Lipschitz constraint enforced smoothly")
+    print(f"Training WGAN on {selected_dataset} images...")
+    print("WGAN Key Features:")
+    print("- Uses Wasserstein distance for better training stability")
+    print("- Critic network (no sigmoid) with weight clipping")
+    print("- Multiple critic updates per generator update")
+    print("- RMSprop optimizer with lower learning rate")
+    print("- Meaningful loss values for convergence monitoring")
 
     # Train the model
     try:
-        netG, netC, results_dir = train_medical_wgan_gp(
+        netG, netC, results_dir = train_medical_wgan(
             dataset_type=selected_dataset,
             data_path=None,
             num_epochs=50,
@@ -540,8 +477,8 @@ if __name__ == "__main__":
         print("\nGenerated files include:")
         print("- images/: Generated medical image samples")
         print("- models/: Generator and critic checkpoints")
-        print("- logs/: Training logs with gradient penalty tracking")
-        print("- plots/: Training curves including Wasserstein distance and gradient penalty")
+        print("- logs/: Training logs with Wasserstein distance tracking")
+        print("- plots/: Training curves including Wasserstein distance")
         print("- metrics/: Training metrics in JSON format")
 
     except KeyboardInterrupt:

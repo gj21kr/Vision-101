@@ -39,7 +39,7 @@ from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import peak_signal_noise_ratio as psnr
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from result_logger import create_logger_for_medical_enhancement
+from medical.result_logger import create_logger_for_medical_enhancement
 
 class ResidualBlock(nn.Module):
     """Residual block for super-resolution network"""

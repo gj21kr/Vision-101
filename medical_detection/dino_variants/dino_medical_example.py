@@ -26,7 +26,7 @@ import sys
 import math
 import random
 sys.path.append('/workspace/Vision-101')
-from result_logger import create_logger_for_medical_detection
+from medical.result_logger import create_logger_for_medical_detection
 
 # 의료 객체 검출 데이터셋
 class MedicalDinoDataset(Dataset):

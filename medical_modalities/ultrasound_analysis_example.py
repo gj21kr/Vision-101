@@ -24,7 +24,7 @@ from PIL import Image
 import os
 import sys
 sys.path.append('/workspace/Vision-101')
-from result_logger import create_logger_for_medical_modalities
+from medical.result_logger import create_logger_for_medical_modalities
 
 class UltrasoundDataset(Dataset):
     def __init__(self, data_type='cardiac_echo', transform=None):

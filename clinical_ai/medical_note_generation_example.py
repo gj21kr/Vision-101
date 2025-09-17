@@ -33,7 +33,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 sys.path.append('/workspace/Vision-101')
-from result_logger import create_logger_for_clinical_ai
+from medical.result_logger import create_logger_for_clinical_ai
 
 class SimpleTokenizer:
     """간단한 토크나이저 클래스 (transformers 대체용)"""

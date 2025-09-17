@@ -25,12 +25,13 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Dataset
 import numpy as np
 import os
-import sys
 
-# Add parent directory to path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-from medical_data_utils import MedicalImageLoader, load_chest_xray_data, load_brain_mri_data
-from result_logger import create_logger_for_generating
+from ...medical_data_utils import (
+    MedicalImageLoader,
+    load_chest_xray_data,
+    load_brain_mri_data,
+)
+from ...result_logger import create_logger_for_generating
 
 def weights_init(m):
     """DCGAN 논문에서 권장하는 가중치 초기화"""

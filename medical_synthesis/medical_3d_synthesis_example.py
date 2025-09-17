@@ -40,7 +40,7 @@ import scipy.ndimage
 # Add Vision-101 to path
 sys.path.append('/workspace/Vision-101')
 try:
-    from result_logger import create_logger_for_medical_synthesis
+    from medical.result_logger import create_logger_for_medical_synthesis
 except ImportError:
     # Fallback logger if result_logger is not available
     class SimpleLogger:

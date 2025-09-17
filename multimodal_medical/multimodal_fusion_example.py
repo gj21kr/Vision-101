@@ -27,7 +27,7 @@ import re
 import json
 from collections import Counter
 sys.path.append('/workspace/Vision-101')
-from result_logger import create_logger_for_multimodal_medical
+from medical.result_logger import create_logger_for_multimodal_medical
 
 class MultimodalMedicalDataset(Dataset):
     def __init__(self, data_type='chest_radiology', transform=None):

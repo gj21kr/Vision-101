@@ -43,8 +43,8 @@ warnings.filterwarnings('ignore')
 
 # Add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from medical_data_utils import MedicalImageLoader, load_chest_xray_data, load_brain_mri_data
-from result_logger import create_logger_for_medical_segmentation
+from medical.medical_data_utils import MedicalImageLoader, load_chest_xray_data, load_brain_mri_data
+from medical.result_logger import create_logger_for_medical_segmentation
 
 class AtrousConv(nn.Module):
     """Atrous Convolution Block"""

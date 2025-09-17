@@ -28,7 +28,7 @@ import math
 import random
 from scipy.optimize import linear_sum_assignment
 sys.path.append('/workspace/Vision-101')
-from result_logger import create_logger_for_medical_detection
+from medical.result_logger import create_logger_for_medical_detection
 
 class MedicalTransformerDetectionDataset(Dataset):
     def __init__(self, data_type='chest_xray', split='train', transform=None):

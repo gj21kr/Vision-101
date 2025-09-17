@@ -22,7 +22,7 @@ from PIL import Image
 import os
 import sys
 sys.path.append('/workspace/Vision-101')
-from result_logger import create_logger_for_medical_modalities
+from medical.result_logger import create_logger_for_medical_modalities
 
 # OCT 전용 데이터로더
 class OCTDataset(Dataset):

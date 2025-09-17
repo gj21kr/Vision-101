@@ -9,15 +9,19 @@ Vision-101에는 의료 이미지에 특화된 다음 기능들이 구현되어 
 ### 📂 파일 구조
 ```
 Vision-101/
-├── medical_data_utils.py           # 의료 데이터 로더
-├── result_logger.py               # 결과 자동 저장 시스템
-├── run_medical_tests.py           # 통합 테스트 스크립트
-├── generating/
-│   ├── vae_medical_example.py     # 의료 이미지 VAE
-│   └── gan_medical_example.py     # 의료 이미지 GAN
-├── 3d/
-│   └── nerf_medical_example.py    # 의료 볼륨 NeRF
-└── results/                       # 모든 결과가 여기에 저장됨
+├── medical/
+│   ├── __init__.py
+│   ├── medical_data_utils.py           # 의료 데이터 로더
+│   ├── result_logger.py               # 결과 자동 저장 시스템
+│   ├── 3d/
+│   │   └── nerf_medical_example.py    # 의료 볼륨 NeRF
+│   └── synthesis/
+│       ├── gan_medical_example.py     # 의료 이미지 GAN
+│       ├── vae_medical_example.py     # 의료 이미지 VAE
+│       ├── gan_variants/...
+│       └── diffusion_variants/...
+├── run_medical_tests.py               # 통합 테스트 스크립트
+└── results/                           # 모든 결과가 여기에 저장됨
 ```
 
 ## 🚀 빠른 시작
@@ -52,20 +56,17 @@ python run_medical_tests.py --algorithms vae gan --dataset brain_mri
 
 #### VAE (Variational Autoencoder)
 ```bash
-cd generating
-python vae_medical_example.py
+python -m medical.synthesis.vae_medical_example
 ```
 
 #### GAN (Generative Adversarial Network)
 ```bash
-cd generating
-python gan_medical_example.py
+python -m medical.synthesis.gan_medical_example
 ```
 
 #### NeRF (Neural Radiance Fields)
 ```bash
-cd 3d
-python nerf_medical_example.py
+python -m medical.3d.nerf_medical_example
 ```
 
 ## 📊 지원하는 의료 이미지 타입
@@ -77,7 +78,7 @@ python nerf_medical_example.py
 - **예시 데이터셋**: ChestX-ray14, Montgomery County
 
 ```python
-from medical_data_utils import load_chest_xray_data
+from medical.medical_data_utils import load_chest_xray_data
 
 # 합성 데이터 생성
 images = load_chest_xray_data(num_samples=1000, image_size=256)
@@ -93,7 +94,7 @@ images = load_chest_xray_data('/path/to/chest_xray_data', num_samples=1000)
 - **예시 데이터셋**: BraTS, ADNI
 
 ```python
-from medical_data_utils import load_brain_mri_data
+from medical.medical_data_utils import load_brain_mri_data
 
 images = load_brain_mri_data(num_samples=1000, image_size=256)
 ```
@@ -105,7 +106,7 @@ images = load_brain_mri_data(num_samples=1000, image_size=256)
 - **예시 데이터셋**: ISIC 2020
 
 ```python
-from medical_data_utils import load_skin_lesion_data
+from medical.medical_data_utils import load_skin_lesion_data
 
 images = load_skin_lesion_data(num_samples=1000, image_size=256)
 ```
@@ -114,7 +115,7 @@ images = load_skin_lesion_data(num_samples=1000, image_size=256)
 
 ### DICOM 파일 로드
 ```python
-from medical_data_utils import MedicalImageLoader
+from medical.medical_data_utils import MedicalImageLoader
 
 loader = MedicalImageLoader('custom', image_size=512)
 
@@ -275,7 +276,7 @@ def evaluate_medical_image_quality(generated_images, image_type):
 export CUDA_VISIBLE_DEVICES=""  # CPU만 사용
 
 # 또는 배치 사이즈 줄이기
-python vae_medical_example.py --batch_size 32
+python -m medical.synthesis.vae_medical_example --batch_size 32
 ```
 
 #### 2. 의존성 설치 오류

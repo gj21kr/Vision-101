@@ -27,7 +27,7 @@ import sys
 import math
 from sklearn.metrics import jaccard_score, f1_score
 sys.path.append('/workspace/Vision-101')
-from result_logger import create_logger_for_medical_segmentation
+from medical.result_logger import create_logger_for_medical_segmentation
 
 class MedicalTransformerSegmentationDataset(Dataset):
     def __init__(self, data_type='brain_mri', split='train', transform=None):
